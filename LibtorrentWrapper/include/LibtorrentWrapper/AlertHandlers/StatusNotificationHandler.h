@@ -66,6 +66,12 @@ namespace GGS {
         {
           qDebug() << "StatusNotificationHandler trackerid_alert: " << a.message().c_str();
         }
+
+        void operator()(libtorrent::torrent_removed_alert const& a) const
+        {
+          qDebug() << "StatusNotificationHandler torrent_removed_alert: " << a.message().c_str();
+        }
+        
       };
     }
   }

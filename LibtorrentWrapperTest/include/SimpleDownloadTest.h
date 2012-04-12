@@ -27,12 +27,16 @@ public:
 
   int progressEventCount;
   int statusEventChangedCount;
-
+  int listenPortChangedEventCount;
+  int trackerFailedEventCount;
 public slots:
   void torrentProgress(ProgressEventArgs args);
   void torrentFileError(QString id, QString path, int errorCode);
   void torrentStatusChanged(QString id, ProgressEventArgs::TorrentStatus oldState, ProgressEventArgs::TorrentStatus newState);
   void torrentDownloadFinished(QString id);
+  void listeningPortChanged(unsigned short port);
+
+  void trackerFailed(QString id, int failCountInARow, int httpStatusCode);
 
   void timeoutTick();
 

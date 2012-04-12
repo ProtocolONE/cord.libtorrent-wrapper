@@ -3,7 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <CommonArea>trunk</CommonArea>
-    <LibtorrentArea>0.16.RC</LibtorrentArea>
+    <LibtorrentArea>0.16.0.0</LibtorrentArea>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />

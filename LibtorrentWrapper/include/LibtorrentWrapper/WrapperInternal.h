@@ -136,6 +136,7 @@ namespace GGS {
 
       int _startupListeningPort;
       libtorrent::session *_session;
+      libtorrent::session_settings _sessionsSettings;
 
       QTimer _alertTimer;
       QTimer _progressTimer;

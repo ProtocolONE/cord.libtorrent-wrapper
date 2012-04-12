@@ -5,3 +5,8 @@
 Следующие QT библиотеки нужны для работы проекта:
 QtCore4.dll
 
+Либторрент собирается следующими коммандами:
+Debug:
+bjam toolset=msvc-10.0 boost=source boost-link=static geoip=off resolve-countries=off timer=performance dht-support=on encryption=off invariant-checks=off asserts=off pool-allocators=on deprecated-functions=off link=static runtime-link=shared variant=debug debug-symbols=on
+Release:
+bjam toolset=msvc-10.0 boost=source boost-link=static geoip=off resolve-countries=off timer=performance dht-support=on encryption=off invariant-checks=off asserts=off pool-allocators=on deprecated-functions=off link=static runtime-link=shared variant=release

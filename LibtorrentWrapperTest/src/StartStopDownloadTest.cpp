@@ -1,9 +1,14 @@
 #include "StartStopDownloadTest.h"
 #include "FileUtils.h"
 
+using namespace GGS::Libtorrent;
+
 StartStopDownloadTest::StartStopDownloadTest(QObject *parent)
   : QObject(parent)
 {
+  this->torrentResumeEventCount = 0;
+  this->progressEventCount = 0;
+  this->statusEventChangedCount = 0;
 }
 
 StartStopDownloadTest::~StartStopDownloadTest()
@@ -79,23 +84,23 @@ void StartStopDownloadTest::setFail(QString reason)
 
 bool StartStopDownloadTest::start()
 {
-  using namespace GGS::Libtorrent;
-  Wrapper wrapper;
+  this->_wrapper = new Wrapper();
 
-  qDebug() << "wrapper connect progress " << connect(&wrapper, SIGNAL(progress(ProgressEventArgs)), this, SLOT(torrentProgress(ProgressEventArgs)));
-  qDebug() << "wrapper connect file error " << connect(&wrapper, SIGNAL(fileError(QString, QString, int)), this, SLOT(torrentFileError(QString, QString, int)));
-  qDebug() << "wrapper connect status changed " << connect(&wrapper, SIGNAL(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)));
-  qDebug() << "wrapper connect torrentDownloadFinished " << connect(&wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
+  qDebug() << "wrapper connect progress " << connect(this->_wrapper, SIGNAL(progressChanged(ProgressEventArgs)), this, SLOT(torrentProgress(ProgressEventArgs)));
+  qDebug() << "wrapper connect file error " << connect(this->_wrapper, SIGNAL(fileError(QString, QString, int)), this, SLOT(torrentFileError(QString, QString, int)));
+  qDebug() << "wrapper connect status changed " << connect(this->_wrapper, SIGNAL(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)));
+  qDebug() << "wrapper connect torrentDownloadFinished " << connect(this->_wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
+  qDebug() << "wrapper connect torrentResumed " << connect(this->_wrapper, SIGNAL(torrentResumed(QString)), this, SLOT(torrentResumed(QString)));
 
   QString torrentConfigPath = QCoreApplication::applicationDirPath();
   torrentConfigPath.append("/torrents");
-  wrapper.setTorrentConfigDirectoryPath(torrentConfigPath);
+  this->_wrapper->setTorrentConfigDirectoryPath(torrentConfigPath);
 
-  wrapper.setListeningPort(0);
-  wrapper.initEngine();
+  this->_wrapper->setListeningPort(0);
+  this->_wrapper->initEngine();
 
   // Set timeout for test;
-  QTimer::singleShot(30000, this, SLOT(timeoutTick()));
+  QTimer::singleShot(120000, this, SLOT(timeoutTick()));
 
   QString root = QCoreApplication::applicationDirPath();
   QString torrentPath = QString("%1/fixtures/bigclient.torrent").arg(root);
@@ -103,8 +108,71 @@ bool StartStopDownloadTest::start()
 
   FileUtils::removeDir(downloadPath);
 
+  this->_torrentPath = torrentPath;
+  this->_downloadPath = downloadPath;
+
   TorrentConfig config;
   config.setDownloadPath(downloadPath);
   config.setPathToTorrentFile(torrentPath);
-  return true;
+
+  this->_wrapper->start(this->_torrentId, config);
+
+  for (int i = 0; i < 10; i++) {
+    QTimer::singleShot(1000, this, SLOT(singleStartSlot()));
+  }
+
+  for (int i = 0; i < 10; i++) {
+    QTimer::singleShot(2000, this, SLOT(singleStopSlot()));
+  }
+
+  for (int i = 0; i < 10; i++) {
+    QTimer::singleShot(3000, this, SLOT(singleStartSlot()));
+    QTimer::singleShot(3000, this, SLOT(singleStopSlot()));
+  }
+
+  for (int i = 0; i < 10; i++) {
+    QTimer::singleShot(4000, this, SLOT(singleReplaceSlot()));
+  }
+
+  this->_loop.exec();
+
+  this->_wrapper->shutdown();
+  delete this->_wrapper;
+  return this->_result;
+}
+
+void StartStopDownloadTest::singleStartSlot()
+{
+  if (!this->_wrapper)
+    return;
+
+  TorrentConfig config;
+  config.setDownloadPath(this->_downloadPath);
+  config.setPathToTorrentFile(this->_torrentPath);
+  this->_wrapper->start(this->_torrentId, config);
+}
+
+void StartStopDownloadTest::singleStopSlot()
+{
+  if (!this->_wrapper)
+    return;
+
+  this->_wrapper->stop(this->_torrentId);
+}
+
+void StartStopDownloadTest::singleReplaceSlot()
+{
+  if (!this->_wrapper)
+    return;
+
+  TorrentConfig config;
+  config.setDownloadPath(this->_downloadPath);
+  config.setPathToTorrentFile(this->_torrentPath);
+  config.setIsReloadRequired(true);
+  this->_wrapper->start(this->_torrentId, config);
+}
+
+void StartStopDownloadTest::torrentResumed( QString id )
+{
+  this->torrentResumeEventCount++;
 }

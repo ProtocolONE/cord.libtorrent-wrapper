@@ -33,6 +33,7 @@ namespace GGS {
 
     WrapperInternal::~WrapperInternal()
     {
+      delete this->_session;
     }
 
     void WrapperInternal::initEngine()
@@ -44,11 +45,11 @@ namespace GGS {
       // 3. add_extension()
       // 4. start DHT, LSD, UPnP, NAT-PMP etc
 
-      // UNDONE: прочитать опции и выбрать нужные. текущие поставил так, чтоб была заготовка куда сеттинги втыкать
-      session_settings settings;
-      settings.user_agent = "qgna/" LIBTORRENT_VERSION;
-      settings.optimize_hashing_for_speed = true;
-      settings.disk_cache_algorithm = session_settings::largest_contiguous;
+      this->_sessionsSettings.user_agent = "qgna/" LIBTORRENT_VERSION;
+      this->_sessionsSettings.optimize_hashing_for_speed = true;
+      this->_sessionsSettings.disk_cache_algorithm = session_settings::largest_contiguous;
+      this->_sessionsSettings.dont_count_slow_torrents = true;
+      this->_sessionsSettings.ban_web_seeds = false;
 
       this->_session = new session(fingerprint("LT", LIBTORRENT_VERSION_MAJOR, LIBTORRENT_VERSION_MINOR, 0, 0)
         , session::start_default_features | session::add_default_plugins
@@ -58,16 +59,27 @@ namespace GGS {
         + alert::storage_notification
         );
 
+      // UNDONE: беда тут - а на выходе чутка подтекает.
+      this->_session->start_lsd();
+      this->_session->start_upnp();
+      this->_session->start_natpmp();
+
+      this->_session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"), 6881));
+      this->_session->add_dht_router(std::make_pair(std::string("router.utorrent.com"), 6881));
+      this->_session->add_dht_router(std::make_pair(std::string("router.bitcomet.com"), 6881));
+      this->_session->start_dht();
+
       error_code ec;
       this->_session->listen_on(std::make_pair(this->_startupListeningPort, this->_startupListeningPort), ec);
-      if (!ec) 
+      if (ec) 
       {
         qDebug() << "can't listen on " << this->_startupListeningPort << " error code " << ec;
         emit this->listenFailed(this->_startupListeningPort, ec.value());
       }
 
       this->loadSessionState();
-      
+      this->_session->set_settings(this->_sessionsSettings);
+
       this->_alertTimer.start(100);
       this->_progressTimer.start(1000);
     }
@@ -126,6 +138,7 @@ namespace GGS {
 
     void WrapperInternal::alertTimerTick()
     {
+      //qDebug() << "|+alertTimerTick";
       std::auto_ptr<alert> alertObject = this->_session->pop_alert();
       while (alertObject.get())
       {
@@ -159,6 +172,7 @@ namespace GGS {
               , listen_succeeded_alert
               , torrent_added_alert
               , trackerid_alert
+              , torrent_removed_alert
             >::handle_alert(alertObject, this->_statusNotificationHandler);
           } else if(alertObject->category() & alert::tracker_notification) {
             handle_alert<
@@ -184,44 +198,55 @@ namespace GGS {
           qCritical() << "unhandled_alert category: " << alertObject->category() << " msg: " << str;
         }
 
+        //qDebug() << "+alertTimerTick";
         alertObject = this->_session->pop_alert();
+        //qDebug() << "-alertTimerTick";
       }
+      //qDebug() << "|-alertTimerTick";
     }
 
     void WrapperInternal::progressTimerTick()
     {
+      //qDebug() << "|+progressTimerTick";
       if (!this->_torrentsMapLock.tryLock())
         return;
-
+      //qDebug() << "|+progressTimerTick 1";
       QMap<QString, TorrentState*>::const_iterator it = this->_idToTorrentState.constBegin();
       QMap<QString, TorrentState*>::const_iterator end = this->_idToTorrentState.constEnd();
 
       for(; it != end; ++it)
       {
+        //qDebug() << "|+progressTimerTick 2";
         TorrentState *state = it.value();
 
         torrent_handle handle = state->handle();
+        //qDebug() << "|+progressTimerTick 3";
         if (!handle.is_valid())
           continue;
 
-        torrent_status status = handle.status();
+        //qDebug() << "|+progressTimerTick 4";
+        torrent_status status = handle.status(0);
+        //qDebug() << "|+progressTimerTick 5";
 
         if (handle.status().state == torrent_status::downloading 
           || handle.status().state == torrent_status::checking_files) {
           this->emitTorrentProgress(state->id(), handle);
         }
 
-        if (handle.status().state == torrent_status::downloading) {
-          if (this->_fastresumeCounter > this->_fastresumeCounterMax) {
-            handle.save_resume_data();
-            this->_fastresumeCounter = 0;
-          } else {
-            this->_fastresumeCounter++;
-          }
-        }
+        //qDebug() << "|+progressTimerTick 6";
+        //if (handle.status().state == torrent_status::downloading) {
+        //  if (this->_fastresumeCounter > this->_fastresumeCounterMax) {
+        //    handle.save_resume_data();
+        //    this->_fastresumeCounter = 0;
+        //  } else {
+        //    this->_fastresumeCounter++;
+        //  }
+        //}
       }
 
+      //qDebug() << "|+progressTimerTick 7";
       this->_torrentsMapLock.unlock();
+      //qDebug() << "|-progressTimerTick";
     }
 
     void WrapperInternal::loadAndStartTorrent(const QString& id, const TorrentConfig &config)
@@ -245,6 +270,8 @@ namespace GGS {
       // http://article.gmane.org/gmane.network.bit-torrent.libtorrent/1482/match=save+path
       p.save_path = config.downloadPath().toUtf8().data();
       p.storage_mode = libtorrent::storage_mode_sparse;
+
+      
 
       QString resumeFilePath = this->getFastResumeFilePath(id);
       std::vector<char> buf;
@@ -329,6 +356,11 @@ namespace GGS {
       this->_progressTimer.stop();
 
       this->_session->pause();
+      this->_session->stop_lsd();
+      this->_session->stop_upnp();
+      this->_session->stop_natpmp();
+      this->_session->stop_dht();
+
       int numResumeData = 0;
 
       QMap<QString, TorrentState*>::const_iterator it = this->_idToTorrentState.constBegin();
@@ -408,7 +440,9 @@ namespace GGS {
 
     void WrapperInternal::emitTorrentProgress(const QString& id, const torrent_handle &handle)
     {
-      torrent_status status = handle.status();
+      //qDebug() << "|+emitTorrentProgress 1";
+      torrent_status status = handle.status(0);
+      //qDebug() << "|+emitTorrentProgress 2";
       ProgressEventArgs args;
       args.setId(id);
       args.setProgress(status.progress);
@@ -417,7 +451,9 @@ namespace GGS {
       args.setUploadRate(status.upload_rate);
       args.setTotalWanted(status.total_wanted);
       args.setTotalWantedDone(status.total_wanted_done);
+
       emit this->progressChanged(args);
+      //qDebug() << "|+emitTorrentProgress 3";
     }
 
     void WrapperInternal::trackerErrorAlert(const torrent_handle &handle, int failCountInARow, int httpStatusCode)
@@ -525,7 +561,8 @@ namespace GGS {
       if (!this->_session)
         return;
 
-      this->_session->set_upload_rate_limit(bytesPerSecond);
+      this->_sessionsSettings.upload_rate_limit = bytesPerSecond;
+      this->_session->set_settings(this->_sessionsSettings);
     }
 
     void WrapperInternal::setDownloadRateLimit(int bytesPerSecond)
@@ -533,15 +570,15 @@ namespace GGS {
       if (!this->_session)
         return;
 
-      this->_session->set_download_rate_limit(bytesPerSecond);
+      this->_sessionsSettings.download_rate_limit = bytesPerSecond;
+      this->_session->set_settings(this->_sessionsSettings);
     }
 
     int WrapperInternal::uploadRateLimit() const
     {
       if (!this->_session)
         return 0;
-
-      return this->_session->upload_rate_limit();
+      return this->_session->settings().upload_rate_limit;
     }
 
     int WrapperInternal::downloadRateLimit() const
@@ -549,7 +586,7 @@ namespace GGS {
       if (!this->_session)
         return 0;
 
-      return this->_session->download_rate_limit();
+      return this->_session->settings().download_rate_limit;
     }
 
     TorrentState* WrapperInternal::getStateById(const QString& id)

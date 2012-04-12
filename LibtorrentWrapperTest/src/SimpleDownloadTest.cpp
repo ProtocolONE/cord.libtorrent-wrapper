@@ -10,6 +10,8 @@ SimpleDownloadTest::SimpleDownloadTest(QObject *parent)
 
   this->progressEventCount = 0;
   this->statusEventChangedCount = 0;
+  this->listenPortChangedEventCount = 0;
+  this->trackerFailedEventCount = 0;
 }
 
 SimpleDownloadTest::~SimpleDownloadTest()
@@ -25,6 +27,9 @@ bool SimpleDownloadTest::start()
   qDebug() << "wrapper connect file error " << connect(&wrapper, SIGNAL(fileError(QString, QString, int)), this, SLOT(torrentFileError(QString, QString, int)));
   qDebug() << "wrapper connect status changed " << connect(&wrapper, SIGNAL(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)));
   qDebug() << "wrapper connect torrentDownloadFinished " << connect(&wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
+  qDebug() << "wrapper connect listeningPortChanged " << connect(&wrapper, SIGNAL(listeningPortChanged(unsigned short)), this, SLOT(listeningPortChanged(unsigned short)));
+  qDebug() << "wrapper connect trackerFailed " << connect(&wrapper, SIGNAL(trackerFailed(QString, int, int)), this, SLOT(trackerFailed(QString, int, int)));
+
   
   QString torrentConfigPath = QCoreApplication::applicationDirPath();
   torrentConfigPath.append("/torrents");
@@ -48,6 +53,7 @@ bool SimpleDownloadTest::start()
     
   wrapper.start(this->_torrentId, config);
 
+  wrapper.changeListeningPort(45323);
   this->_loop.exec();
   wrapper.shutdown();
 
@@ -140,4 +146,20 @@ void SimpleDownloadTest::setFail( QString reason )
 {
   qDebug() << "fail : " << reason;
   this->setResult(false);
+}
+
+void SimpleDownloadTest::listeningPortChanged( unsigned short port )
+{
+  this->listenPortChangedEventCount++;
+}
+
+void SimpleDownloadTest::trackerFailed( QString id, int failCountInARow, int httpStatusCode )
+{
+  if (id != this->_torrentId)
+  {
+    this->setFail("wrong torrent id in torrentDownloadFinished");
+    return;
+  }
+
+  this->trackerFailedEventCount++;
 }

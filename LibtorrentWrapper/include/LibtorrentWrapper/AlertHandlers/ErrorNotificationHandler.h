@@ -88,6 +88,7 @@ namespace GGS
         /// <remarks>Ilya.Tkachenko, 06.04.2012.</remarks>
         void operator()(libtorrent::udp_error_alert const& a) const
         {
+          QString str = QString::fromLocal8Bit(a.message().c_str());
           qDebug() << "ErrorNotificationHandler udp_error_alert: " << a.message().c_str();
         }
 

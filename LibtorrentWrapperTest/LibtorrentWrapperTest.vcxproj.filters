@@ -52,17 +52,23 @@
     <ClCompile Include="src\StartStopDownloadTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_StartStopDownloadTest.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_StartStopDownloadTest.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\SimpleDownloadTest.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="include\StartStopDownloadTest.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\FileUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\StartStopDownloadTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
