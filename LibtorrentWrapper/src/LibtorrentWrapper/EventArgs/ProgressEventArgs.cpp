@@ -21,7 +21,7 @@ namespace GGS
       {
       }
 
-      ProgressEventArgs::ProgressEventArgs( const ProgressEventArgs &p )
+      ProgressEventArgs::ProgressEventArgs(const ProgressEventArgs &p)
         : _progress(p._progress),
         _status(p._status),
         _id(p._id),

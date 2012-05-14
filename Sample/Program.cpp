@@ -4,7 +4,7 @@
 
 Program::Program()
 {
-  qRegisterMetaType<ProgressEventArgs>();
+  qRegisterMetaType<GGS::Libtorrent::EventArgs::ProgressEventArgs>();
 
   this->setProgress1(0);
   this->setProgress2(0);
@@ -21,9 +21,9 @@ Program::Program()
   nQMLContainer->setResizeMode(QDeclarativeView::SizeRootObjectToView);                                                       
   nQMLContainer->showNormal();
 
-  qDebug() << "wrapper connect progressChanged " << connect(&this->_wrapper, SIGNAL(progressChanged(ProgressEventArgs)), this, SLOT(torrentProgress(ProgressEventArgs)));
+  qDebug() << "wrapper connect progressChanged " << connect(&this->_wrapper, SIGNAL(progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs)), this, SLOT(torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs)));
   qDebug() << "wrapper connect file error " << connect(&this->_wrapper, SIGNAL(fileError(QString, QString, int)), this, SLOT(torrentFileError(QString, QString, int)));
-  qDebug() << "wrapper connect status changed " << connect(&this->_wrapper, SIGNAL(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)));
+  qDebug() << "wrapper connect status changed " << connect(&this->_wrapper, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
   qDebug() << "wrapper connect torrentDownloadFinished " << connect(&this->_wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
   qDebug() << "wrapper connect listeningPortChanged " << connect(&this->_wrapper, SIGNAL(listeningPortChanged(unsigned short)), this, SLOT(torrentListeningPortChanged(unsigned short)));
 
@@ -79,7 +79,7 @@ void Program::reloadSameTorrent()
 
 }
 
-void Program::torrentProgress( ProgressEventArgs args )
+void Program::torrentProgress( GGS::Libtorrent::EventArgs::ProgressEventArgs args )
 {
   
   QString str = QString("id %1 progress %2 status %3 d_rate %4 u_rate %5 twd %6 tw %7").arg(args.id()).arg(args.progress()).arg(args.status()).arg(args.downloadRate()).arg(args.uploadRate()).arg(args.totalWantedDone()).arg(args.totalWanted());
@@ -154,7 +154,7 @@ void Program::torrentFileError( QString id, QString path, int errorCode )
   this->_wrapper.stop(id);
 }
 
-void Program::torrentStatusChanged( QString id, ProgressEventArgs::TorrentStatus oldState, ProgressEventArgs::TorrentStatus newState )
+void Program::torrentStatusChanged( QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState )
 {
   qDebug() << "id " << id << " state change from " << oldState << " to " << newState;
 }

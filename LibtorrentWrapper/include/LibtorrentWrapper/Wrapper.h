@@ -21,12 +21,11 @@ namespace GGS {
   namespace Libtorrent
   {
     class WrapperInternal;
-    using EventArgs::ProgressEventArgs;
     class LIBTORRENTWRAPPER_EXPORT Wrapper : public QObject
     {
       Q_OBJECT
     public:
-      Wrapper();
+      explicit Wrapper(QObject *parent = 0);
       ~Wrapper();
 
 
@@ -123,7 +122,7 @@ namespace GGS {
       /// <summary>Progress.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       /// <param name="args">Progress event information.</param>
-      void progressChanged(ProgressEventArgs args);
+      void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
 
 
       /// <summary>Трекер вернул ошибку.</summary>
@@ -143,10 +142,19 @@ namespace GGS {
       void fileError(QString id, QString filePath, int errorCode);
 
 
+      /*!
+        \fn void Wrapper::torrentError(QString id);
+        \brief Torrent error.
+        \author Ilya.Tkachenko
+        \date 12.05.2012
+        \param id Id торрента.
+      */
+      void torrentError(QString id);
+
       /// <summary>Listen fail.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       /// <param name="port">     The port.</param>
-      /// <param name="errorCode"> Код ошибки. ОТкуда брать расшифровку пока не совсем понятно. Коды
+      /// <param name="errorCode"> Код ошибки. Откуда брать расшифровку пока не совсем понятно. Коды
       ///   похожи на те что указаны в ec_xlate (%BOOST_ROOT%\interprocess\errors.hpp). Например, 112 -
       ///   нехватка места на диске - ERROR_DISK_FULL.</param>
       void listenFailed(int port, int errorCode);
@@ -157,7 +165,9 @@ namespace GGS {
       /// <param name="id">      Id торрента.</param>
       /// <param name="oldState">State of the old.</param>
       /// <param name="newState">State of the new.</param>
-      void torrentStatusChanged(QString id, ProgressEventArgs::TorrentStatus oldState, ProgressEventArgs::TorrentStatus newState);
+      void torrentStatusChanged(QString id, 
+        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, 
+        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
 
 
       /// <summary>Torrent download finished.</summary>
@@ -170,6 +180,10 @@ namespace GGS {
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       /// <param name="id">Id торрента.</param>
       void torrentResumed(QString id);
+
+      void startTorrentFailed(QString id, int errorCode);
+
+      void torrentPaused(QString id);
 
     private:
       WrapperInternal *_internalWrapper;

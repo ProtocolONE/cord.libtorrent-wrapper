@@ -15,22 +15,25 @@ namespace GGS {
   namespace Libtorrent
   {
 
-    Wrapper::Wrapper()
+    Wrapper::Wrapper(QObject *parent)
+      : QObject(parent)
     {
       this->_internalWrapper = new WrapperInternal(this);
-      qDebug() << "connect progress " <<    connect(this->_internalWrapper, SIGNAL(progressChanged(ProgressEventArgs)), this, SIGNAL(progressChanged(ProgressEventArgs)));
-      qDebug() << "connect trackerFailed " << connect(this->_internalWrapper, SIGNAL(trackerFailed(QString, int, int)), this, SIGNAL(trackerFailed(QString, int, int)));
-      qDebug() << "connect fileFail  " <<   connect(this->_internalWrapper, SIGNAL(fileError(QString, QString, int)), this, SIGNAL(fileError(QString, QString, int)));
-      qDebug() << "connect listenFail  " << connect(this->_internalWrapper, SIGNAL(listenFailed(int, int)), this, SIGNAL(listenFailed(int, int)));
-      qDebug() << "connect torrentStatusChanged  " << 
-        connect(this->_internalWrapper, 
-        SIGNAL(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)), 
-        this, 
-        SIGNAL(torrentStatusChanged(QString, ProgressEventArgs::TorrentStatus, ProgressEventArgs::TorrentStatus)));
+      connect(this->_internalWrapper, SIGNAL(progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs)), this, SIGNAL(progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs)));
+      connect(this->_internalWrapper, SIGNAL(trackerFailed(QString, int, int)), this, SIGNAL(trackerFailed(QString, int, int)));
+      connect(this->_internalWrapper, SIGNAL(fileError(QString, QString, int)), this, SIGNAL(fileError(QString, QString, int)));
+      connect(this->_internalWrapper, SIGNAL(listenFailed(int, int)), this, SIGNAL(listenFailed(int, int)));
+      connect(this->_internalWrapper, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), 
+        this, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
 
-      qDebug() << "connect torrentFinished  " << connect(this->_internalWrapper, SIGNAL(torrentDownloadFinished(QString)), this, SIGNAL(torrentDownloadFinished(QString)));
-      qDebug() << "connect torrentResumed  " <<  connect(this->_internalWrapper, SIGNAL(torrentResumed(QString)), this, SIGNAL(torrentResumed(QString)));
-      qDebug() << "connect listeningPortChanged  " <<  connect(this->_internalWrapper, SIGNAL(listeningPortChanged(unsigned short)), this, SIGNAL(listeningPortChanged(unsigned short)));
+      connect(this->_internalWrapper, SIGNAL(torrentDownloadFinished(QString)), this, SIGNAL(torrentDownloadFinished(QString)));
+      connect(this->_internalWrapper, SIGNAL(torrentResumed(QString)), this, SIGNAL(torrentResumed(QString)));
+      connect(this->_internalWrapper, SIGNAL(listeningPortChanged(unsigned short)), this, SIGNAL(listeningPortChanged(unsigned short)));
+
+      connect(this->_internalWrapper, SIGNAL(startTorrentFailed(QString, int)), this, SIGNAL(startTorrentFailed(QString,int)));
+      connect(this->_internalWrapper, SIGNAL(torrentPaused(QString)), this, SIGNAL(torrentPaused(QString)));
+
+      connect(this->_internalWrapper, SIGNAL(torrentError(QString)), this, SIGNAL(torrentError(QString)));
     }
 
     Wrapper::~Wrapper()

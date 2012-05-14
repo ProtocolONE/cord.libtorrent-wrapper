@@ -14,13 +14,54 @@ namespace GGS {
   namespace Libtorrent
   {
 
-    TorrentConfig::TorrentConfig(void)
+    TorrentConfig::TorrentConfig()
+      : _isReloadRequired(false)
     {
-      this->_isReloadRequired = false;
     }
 
-    TorrentConfig::~TorrentConfig(void)
+    TorrentConfig::~TorrentConfig()
     {
     }
+
+    void TorrentConfig::setPathToTorrentFile(const QString& pathToTorrentFile)
+    {
+      this->_pathToTorrentFile = pathToTorrentFile;
+    }
+
+    const QString& TorrentConfig::pathToTorrentFile() const
+    {
+      return this->_pathToTorrentFile;
+    }
+
+    void TorrentConfig::setDownloadPath(const QString& downloadPath)
+    {
+      this->_downloadPath = downloadPath;
+    }
+
+    const QString& TorrentConfig::downloadPath() const
+    {
+      return this->_downloadPath;
+    }
+
+    void TorrentConfig::setIsReloadRequired(bool isReloadRequired)
+    {
+      this->_isReloadRequired = isReloadRequired;
+    }
+
+    bool TorrentConfig::isReloadRequired() const
+    {
+      return this->_isReloadRequired;
+    }
+
+    void TorrentConfig::setIsForceRehash(bool isForceRehash)
+    {
+      this->_forceRehash = isForceRehash;
+    }
+
+    bool TorrentConfig::isForceRehash() const
+    {
+      return this->_forceRehash;
+    }
+
   }
 }

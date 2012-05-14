@@ -25,19 +25,23 @@ namespace GGS {
       TorrentConfig();
       ~TorrentConfig();
 
-      void setPathToTorrentFile(const QString& pathToTorrentFile) { this->_pathToTorrentFile = pathToTorrentFile; }
-      const QString& pathToTorrentFile() const { return this->_pathToTorrentFile; }
+      void setPathToTorrentFile(const QString& pathToTorrentFile);
+      const QString& pathToTorrentFile() const;
       
-      void setDownloadPath(const QString& downloadPath) { this->_downloadPath = downloadPath; }
-      const QString& downloadPath() const { return this->_downloadPath; }
+      void setDownloadPath(const QString& downloadPath);
+      const QString& downloadPath() const;
 
-      void setIsReloadRequired(bool isReloadRequired) { this->_isReloadRequired = isReloadRequired; }
-      bool isReloadRequired() const { return this->_isReloadRequired; }
+      void setIsReloadRequired(bool isReloadRequired);
+      bool isReloadRequired() const;
+
+      void setIsForceRehash(bool isForceRehash);
+      bool isForceRehash() const;
 
     private:
       QString _pathToTorrentFile;
       QString _downloadPath;
       bool _isReloadRequired;
+      bool _forceRehash;
     };
 
   }

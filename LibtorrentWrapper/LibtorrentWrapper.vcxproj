@@ -58,6 +58,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalOptions>/MP4 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -80,6 +81,9 @@ xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper" "$(QGNACOMMONDI
 xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
 xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\TorrentConfig" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
 xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\TorrentConfig.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\libtorrentwrapper_global" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\libtorrentwrapper_global.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+
 xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\EventArgs\*" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\EventArgs\"
 xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\EventArgs\*.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\EventArgs\"
 ) else (

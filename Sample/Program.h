@@ -16,7 +16,6 @@
 #include <QtDeclarative/QDeclarativeEngine>
 #include <QMainWindow>
 
-using namespace GGS::Libtorrent::EventArgs;
 class Program : public QMainWindow
 {
   Q_OBJECT
@@ -58,9 +57,9 @@ public slots:
     void stopTorrent(QString id);
     void restartTorrent(QString id);
 
-    void torrentProgress(ProgressEventArgs args);
+    void torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
     void torrentFileError(QString id, QString path, int errorCode);
-    void torrentStatusChanged(QString id, ProgressEventArgs::TorrentStatus oldState, ProgressEventArgs::TorrentStatus newState);
+    void torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
     void torrentDownloadFinished(QString id);
 
     void torrentChangePort();

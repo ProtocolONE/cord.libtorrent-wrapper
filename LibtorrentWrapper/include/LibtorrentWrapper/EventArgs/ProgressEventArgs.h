@@ -27,7 +27,7 @@ namespace GGS
       class LIBTORRENTWRAPPER_EXPORT ProgressEventArgs : public QObject
       {
         Q_OBJECT
-          Q_ENUMS(TorrentStatus)
+        Q_ENUMS(TorrentStatus)
       public:
         ProgressEventArgs(QObject *parrent = 0);
         ProgressEventArgs(const ProgressEventArgs &p);

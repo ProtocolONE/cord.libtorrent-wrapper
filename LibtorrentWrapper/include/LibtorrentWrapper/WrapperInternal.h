@@ -51,7 +51,6 @@
 namespace GGS {
   namespace Libtorrent
   {
-    using EventArgs::ProgressEventArgs;
     class WrapperInternal : public QObject
     {
       Q_OBJECT
@@ -97,27 +96,34 @@ namespace GGS {
       void torrentResumedAlert(const libtorrent::torrent_handle &handle);
 
       void torrentUrlSeedAlert(const libtorrent::torrent_handle &handle, const std::string& url);
+      void torrentErrorAlert(const libtorrent::torrent_handle &handle);
 
     signals:
       
       void listeningPortChanged(unsigned short port);
-      void progressChanged(ProgressEventArgs args);
-      void trackerFailed(QString id, int failCountInARow, int httpStatusCode);
-      void fileError(QString id, QString filePath, int errorCode);
-      void listenFailed(int port, int errorCode);
-      void torrentStatusChanged(QString id, ProgressEventArgs::TorrentStatus oldState, ProgressEventArgs::TorrentStatus newState);
+      void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
+
+      void torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
       void torrentDownloadFinished(QString id);
       void torrentResumed(QString id);
+      void torrentPaused(QString id);
+
+      void trackerFailed(QString id, int failCountInARow, int httpStatusCode);
+      void torrentError(QString id);
+      void fileError(QString id, QString filePath, int errorCode);
       void startTorrentFailed(QString id, int errorCode);
-      
+
+      void listenFailed(int port, int errorCode);
+
     private slots:
       void alertTimerTick();
       void progressTimerTick();
 
+
     private:
       void createDirectoryIfNotExists(const QString &resumeFilePath );
       void loadAndStartTorrent(const QString& id, const TorrentConfig &config);
-      ProgressEventArgs::TorrentStatus convertStatus(const libtorrent::torrent_status::state_t status);
+      GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus convertStatus(const libtorrent::torrent_status::state_t status);
       QString getFastResumeFilePath(const QString& id);
       inline TorrentState* getStateByTorrentHandle(const libtorrent::torrent_handle &handle);
       inline TorrentState* getStateById(const QString& id);

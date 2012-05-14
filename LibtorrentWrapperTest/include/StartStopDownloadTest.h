@@ -15,7 +15,6 @@
 
 #include <gtest/gtest.h>
 
-using namespace GGS::Libtorrent::EventArgs;
 class StartStopDownloadTest : public QObject
 {
   Q_OBJECT
@@ -30,9 +29,9 @@ public:
   int torrentResumeEventCount;
 
 public slots:
-  void torrentProgress(ProgressEventArgs args);
+  void torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
   void torrentFileError(QString id, QString path, int errorCode);
-  void torrentStatusChanged(QString id, ProgressEventArgs::TorrentStatus oldState, ProgressEventArgs::TorrentStatus newState);
+  void torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
   void torrentDownloadFinished(QString id);
   void torrentResumed(QString id);
   void timeoutTick();

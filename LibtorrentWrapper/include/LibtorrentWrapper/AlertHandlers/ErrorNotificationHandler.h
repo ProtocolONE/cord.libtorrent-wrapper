@@ -30,6 +30,7 @@ namespace GGS
         void operator()(libtorrent::tracker_error_alert const& a) const;
         void operator()(libtorrent::file_error_alert const& a) const;
         void operator()(libtorrent::listen_failed_alert const& a) const;
+        void operator()(libtorrent::torrent_error_alert const& a) const;
 
         /// <summary>This alert is generated when a HTTP seed name lookup fails.</summary>
         /// <remarks>Ilya.Tkachenko, 06.04.2012.</remarks>
@@ -89,7 +90,7 @@ namespace GGS
         void operator()(libtorrent::udp_error_alert const& a) const
         {
           QString str = QString::fromLocal8Bit(a.message().c_str());
-          qDebug() << "ErrorNotificationHandler udp_error_alert: " << a.message().c_str();
+          qDebug() << "ErrorNotificationHandler udp_error_alert: " << str;
         }
 
         /// <summary>This alert is generated when a NAT router was successfully found but some part of the port mapping 

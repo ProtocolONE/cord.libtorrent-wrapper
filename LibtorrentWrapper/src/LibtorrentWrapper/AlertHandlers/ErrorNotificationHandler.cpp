@@ -40,6 +40,13 @@ namespace GGS {
       {
         this->wrapperInternal->torrentUrlSeedAlert(a.handle, a.url);
       }
+
+      void ErrorNotificationHandler::operator()(libtorrent::torrent_error_alert const& a) const
+      {
+        qDebug() << "ErrorNotificationHandler torrent_error_alert: " << a.message().c_str();
+        this->wrapperInternal->torrentErrorAlert(a.handle);
+      }
+
     }
   }
 }

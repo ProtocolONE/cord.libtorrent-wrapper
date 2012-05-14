@@ -16,6 +16,7 @@ namespace GGS {
   {
     WrapperInternal::WrapperInternal(QObject *parent)
       : QObject(parent)
+      , _session(0)
     {
       this->_fastResumeWaitTimeInSec = 30;
       this->_fastresumeCounterMax = 40;
@@ -103,9 +104,14 @@ namespace GGS {
         this->loadAndStartTorrent(id, config);
       } else {
         torrent_handle handle = state->handle();
-        if (handle.is_valid())
-          handle.resume();
-
+        
+        // UNDONE: Тут могут остаьтся пробелмы с другими стадиями.
+        if (handle.is_valid()) {
+          if (handle.status().state == torrent_status::seeding)
+            emit this->torrentDownloadFinished(id);
+          else 
+            handle.resume();
+        }
       }
     }
 
@@ -158,6 +164,7 @@ namespace GGS {
               , listen_failed_alert
               , portmap_error_alert
               , fastresume_rejected_alert
+              , torrent_error_alert
             >::handle_alert(alertObject, this->_errorNotificationHandler);
           } else if(alertObject->category() & alert::status_notification) {
             handle_alert<
@@ -195,7 +202,7 @@ namespace GGS {
 
         } catch(libtorrent::unhandled_alert &e) {
           QString str = QString::fromLocal8Bit(alertObject->message().c_str());
-          qCritical() << "unhandled_alert category: " << alertObject->category() << " msg: " << str;
+          qCritical() << "unhandled_alert category: " << alertObject->category() << typeid(*alertObject).name() << " msg: " << str;
         }
 
         //qDebug() << "+alertTimerTick";
@@ -228,20 +235,23 @@ namespace GGS {
         torrent_status status = handle.status(0);
         //qDebug() << "|+progressTimerTick 5";
 
-        if (handle.status().state == torrent_status::downloading 
-          || handle.status().state == torrent_status::checking_files) {
+        if (status.paused)
+          continue;
+
+        if (status.state == torrent_status::downloading 
+          || status.state == torrent_status::checking_files) {
           this->emitTorrentProgress(state->id(), handle);
         }
 
         //qDebug() << "|+progressTimerTick 6";
-        //if (handle.status().state == torrent_status::downloading) {
-        //  if (this->_fastresumeCounter > this->_fastresumeCounterMax) {
-        //    handle.save_resume_data();
-        //    this->_fastresumeCounter = 0;
-        //  } else {
-        //    this->_fastresumeCounter++;
-        //  }
-        //}
+        if (status.state == torrent_status::downloading) {
+          if (this->_fastresumeCounter > this->_fastresumeCounterMax) {
+            handle.save_resume_data();
+            this->_fastresumeCounter = 0;
+          } else {
+            this->_fastresumeCounter++;
+          }
+        }
       }
 
       //qDebug() << "|+progressTimerTick 7";
@@ -271,12 +281,12 @@ namespace GGS {
       p.save_path = config.downloadPath().toUtf8().data();
       p.storage_mode = libtorrent::storage_mode_sparse;
 
-      
-
       QString resumeFilePath = this->getFastResumeFilePath(id);
-      std::vector<char> buf;
-      if (load_file(resumeFilePath.toUtf8().data(), buf, ec) == 0)
-        p.resume_data = &buf;
+      if (!config.isForceRehash()) {
+        std::vector<char> buf;
+        if (load_file(resumeFilePath.toUtf8().data(), buf, ec) == 0)
+          p.resume_data = &buf;
+      }
 
       torrent_handle h = this->_session->add_torrent(p, ec);
 
@@ -296,29 +306,29 @@ namespace GGS {
       this->_infohashToTorrentState[infohash] = state;
     }
 
-    ProgressEventArgs::TorrentStatus WrapperInternal::convertStatus(torrent_status::state_t status)
+    GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus WrapperInternal::convertStatus(torrent_status::state_t status)
     {
       switch(status)
       {
       case torrent_status::queued_for_checking:
-        return ProgressEventArgs::QueuedForChecking;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::QueuedForChecking;
       case torrent_status::checking_files:
-        return ProgressEventArgs::CheckingFiles;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::CheckingFiles;
       case torrent_status::downloading_metadata:
-        return ProgressEventArgs::DownloadingMetadata;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::DownloadingMetadata;
       case torrent_status::downloading:
-        return ProgressEventArgs::Downloading;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Downloading;
       case torrent_status::finished:
-        return ProgressEventArgs::Finished;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Finished;
       case torrent_status::seeding:
-        return ProgressEventArgs::Seeding;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Seeding;
       case torrent_status::allocating:
-        return ProgressEventArgs::Allocating;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Allocating;
       case torrent_status::checking_resume_data:
-        return ProgressEventArgs::CheckingResumeData;
+        return GGS::Libtorrent::EventArgs::ProgressEventArgs::CheckingResumeData;
       }
 
-      return ProgressEventArgs::Finished;
+      return GGS::Libtorrent::EventArgs::ProgressEventArgs::Finished;
     }
 
     void WrapperInternal::saveFastResume(const torrent_handle &handle, boost::shared_ptr<entry> resumeData)
@@ -434,7 +444,8 @@ namespace GGS {
 
       if (state && handle.is_valid()) {
         handle.save_resume_data();
-        emitTorrentProgress(state->id(), handle);
+        this->emitTorrentProgress(state->id(), handle);
+        emit this->torrentPaused(state->id());
       }
     }
 
@@ -443,7 +454,7 @@ namespace GGS {
       //qDebug() << "|+emitTorrentProgress 1";
       torrent_status status = handle.status(0);
       //qDebug() << "|+emitTorrentProgress 2";
-      ProgressEventArgs args;
+      GGS::Libtorrent::EventArgs::ProgressEventArgs args;
       args.setId(id);
       args.setProgress(status.progress);
       args.setStatus(this->convertStatus(status.state));
@@ -489,9 +500,15 @@ namespace GGS {
 
     void WrapperInternal::torrentFinishedAlert(const torrent_handle &handle)
     {
+      if (!handle.is_valid()) {
+        return;
+      }
+
+      handle.save_resume_data();
+
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
-      if (state && handle.is_valid()) {
+      if (state) {
         emit this->torrentDownloadFinished(state->id());
         this->emitTorrentProgress(state->id(), handle);
       }
@@ -634,6 +651,17 @@ namespace GGS {
       for(; it != end; ++it)
         delete it.value();
     }
+
+    void WrapperInternal::torrentErrorAlert( const libtorrent::torrent_handle &handle )
+    {
+      if (!handle.is_valid())
+        return;
+
+      QMutexLocker lock(&this->_torrentsMapLock);
+      TorrentState *state = this->getStateByTorrentHandle(handle);
+      if (state)
+        emit this->torrentError(state->id());
+    }      
 
   }
 }
