@@ -149,6 +149,7 @@ EXIT /B 1
     <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\ErrorNotificationHandler.cpp" />
     <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\StatusNotificationHandler.cpp" />
     <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\StorageNotificationHandler.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\TrackerNotificationHandler.cpp" />
     <ClCompile Include="src\LibtorrentWrapper\EventArgs\ProgressEventArgs.cpp" />
     <ClCompile Include="src\LibtorrentWrapper\Wrapper.cpp" />
     <ClCompile Include="src\LibtorrentWrapper\WrapperInternal.cpp" />

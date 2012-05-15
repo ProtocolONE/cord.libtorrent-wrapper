@@ -112,6 +112,25 @@ namespace GGS {
       /// <returns>.</returns>
       int downloadRateLimit() const;
 
+
+      /*!
+        \fn int Wrapper::maxConnection();
+        \brief Gets the maximum connection.
+        \author Ilya.Tkachenko
+        \date 30.05.2012
+        \return .
+      */
+      int maxConnection();
+
+      /*!
+        \fn void Wrapper::setMaxConnection(int maxConnection);
+        \brief Sets a maximum connection.
+        \author Ilya.Tkachenko
+        \date 30.05.2012
+        \param maxConnection The maximum connection.
+      */
+      void setMaxConnection(int maxConnection);
+
     signals:
 
       /// <summary>Listening port changed. Do not call before InitEngine.</summary>

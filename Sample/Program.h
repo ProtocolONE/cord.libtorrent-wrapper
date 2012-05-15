@@ -61,6 +61,7 @@ public slots:
     void torrentFileError(QString id, QString path, int errorCode);
     void torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
     void torrentDownloadFinished(QString id);
+    void torrentPaused(QString id);
 
     void torrentChangePort();
 

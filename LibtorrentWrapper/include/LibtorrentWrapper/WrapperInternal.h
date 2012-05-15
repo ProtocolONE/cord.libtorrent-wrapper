@@ -71,9 +71,12 @@ namespace GGS {
       void changeListeningPort(unsigned short port);
       unsigned short listeningPort() const;
 
+      int maxConnection();
+      void setMaxConnection(int maxConnection);
+
       void setUploadRateLimit(int bytesPerSecond);
       void setDownloadRateLimit(int bytesPerSecond);
-
+      
       int uploadRateLimit() const;
       int downloadRateLimit() const;
 

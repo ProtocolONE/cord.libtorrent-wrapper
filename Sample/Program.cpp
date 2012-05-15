@@ -26,6 +26,9 @@ Program::Program()
   qDebug() << "wrapper connect status changed " << connect(&this->_wrapper, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
   qDebug() << "wrapper connect torrentDownloadFinished " << connect(&this->_wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
   qDebug() << "wrapper connect listeningPortChanged " << connect(&this->_wrapper, SIGNAL(listeningPortChanged(unsigned short)), this, SLOT(torrentListeningPortChanged(unsigned short)));
+  
+  qDebug() << "wrapper connect torrentPaused " << connect(&this->_wrapper, SIGNAL(torrentPaused(QString)), this, SLOT(torrentPaused(QString)));
+
 
   this->setPort("11999");
   QString torrentConfigPath = root;
@@ -48,7 +51,8 @@ void Program::start()
   torrentPath.append("/300003010000000000.torrent");
   QString downloadPath = root;
   
-  downloadPath.append(QString::fromLocal8Bit("/игра_game"));
+  //downloadPath.append(QString::fromLocal8Bit("/игра_game"));
+  downloadPath.append(QString::fromLocal8Bit("/game"));
 
   this->_config.setDownloadPath(downloadPath);
   this->_config.setPathToTorrentFile(torrentPath);
@@ -68,7 +72,8 @@ void Program::reloadSameTorrent()
   torrentPath.append("/300003010000000000.torrent");
   QString downloadPath = root;
 
-  downloadPath.append(QString::fromLocal8Bit("/игра_game"));
+  //downloadPath.append(QString::fromLocal8Bit("/игра_game"));
+  downloadPath.append(QString::fromLocal8Bit("/game"));
 
   this->_config.setDownloadPath(downloadPath);
   this->_config.setPathToTorrentFile(torrentPath);
@@ -115,7 +120,8 @@ void Program::startTorrent( QString id )
   torrentPath.append(".torrent");
   QString downloadPath = root;
 
-  downloadPath.append(QString::fromLocal8Bit("/игра_game/"));
+  //downloadPath.append(QString::fromLocal8Bit("/игра_game/"));
+  downloadPath.append(QString::fromLocal8Bit("/game/"));
   downloadPath.append(id);
   downloadPath.append("/");
 
@@ -126,6 +132,7 @@ void Program::startTorrent( QString id )
 
 void Program::stopTorrent( QString id )
 {
+  qDebug() << "stopping" << id;
   this->_wrapper.stop(id);
 }
 
@@ -138,7 +145,8 @@ void Program::restartTorrent( QString id )
   torrentPath.append(".torrent");
   QString downloadPath = root;
 
-  downloadPath.append(QString::fromLocal8Bit("/игра_game/"));
+  //downloadPath.append(QString::fromLocal8Bit("/игра_game/"));
+  downloadPath.append(QString::fromLocal8Bit("/game/"));
   downloadPath.append(id);
   downloadPath.append("/");
 
@@ -195,5 +203,10 @@ void Program::setDownloadRateLimit(QString bytesPerSecond)
   int q = bytesPerSecond.toInt(&ok);
   if (ok)
     this->_wrapper.setDownloadRateLimit(q);
+}
+
+void Program::torrentPaused(QString id)
+{
+  qDebug() << "stopped " << id;
 }
 

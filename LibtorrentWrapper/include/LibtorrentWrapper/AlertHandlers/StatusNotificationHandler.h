@@ -14,9 +14,6 @@
 #include <libtorrent/alert.hpp>
 #include <libtorrent/alert_types.hpp>
 
-#include <QtCore/QString>
-#include <QtCore/QDebug>
-
 namespace GGS {
   namespace Libtorrent
   {
@@ -31,47 +28,21 @@ namespace GGS {
         void operator()(libtorrent::torrent_finished_alert const& a) const;
         void operator()(libtorrent::torrent_resumed_alert const& a) const;
 
-        void operator()(libtorrent::hash_failed_alert const& a) const
-        {
-          // Не очень хочется выводить это в лог, много и не особо информативно
-          //qDebug() << "StatusNotificationHandler hash_failed_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::hash_failed_alert const& a) const;
 
-        void operator()(libtorrent::torrent_checked_alert const& a) const
-        {
-          qDebug() << "StatusNotificationHandler torrent_checked_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::torrent_checked_alert const& a) const;
 
-        void operator()(libtorrent::metadata_received_alert const& a) const
-        {
-          qDebug() << "StatusNotificationHandler metadata_received_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::metadata_received_alert const& a) const;
 
-        void operator()(libtorrent::external_ip_alert const& a) const
-        {
-          qDebug() << "StatusNotificationHandler external_ip_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::external_ip_alert const& a) const;
 
-        void operator()(libtorrent::listen_succeeded_alert const& a) const
-        {
-          qDebug() << "StatusNotificationHandler listen_succeeded_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::listen_succeeded_alert const& a) const;
 
-        void operator()(libtorrent::torrent_added_alert const& a) const
-        {
-          qDebug() << "StatusNotificationHandler add_torrent_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::torrent_added_alert const& a) const;
 
-        void operator()(libtorrent::trackerid_alert const& a) const
-        {
-          qDebug() << "StatusNotificationHandler trackerid_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::trackerid_alert const& a) const;
 
-        void operator()(libtorrent::torrent_removed_alert const& a) const
-        {
-          qDebug() << "StatusNotificationHandler torrent_removed_alert: " << a.message().c_str();
-        }
-        
+        void operator()(libtorrent::torrent_removed_alert const& a) const;
       };
     }
   }

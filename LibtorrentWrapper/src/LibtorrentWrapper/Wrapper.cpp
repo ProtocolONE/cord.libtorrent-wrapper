@@ -106,5 +106,15 @@ namespace GGS {
       this->_internalWrapper->setTorrentConfigDirectoryPath(path);
     }
 
+    int Wrapper::maxConnection()
+    {
+      return this->_internalWrapper->maxConnection();
+    }
+
+    void Wrapper::setMaxConnection(int maxConnection)
+    {
+      this->_internalWrapper->setMaxConnection(maxConnection);
+    }
+
   }
 }

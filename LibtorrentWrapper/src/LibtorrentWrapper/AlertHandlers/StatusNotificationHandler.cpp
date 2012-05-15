@@ -8,8 +8,12 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 ****************************************************************************/
 
+#include <LibtorrentWrapper/libtorrentwrapper_global.h>
 #include <LibtorrentWrapper/AlertHandlers/StatusNotificationHandler>
 #include <LibtorrentWrapper/WrapperInternal>
+
+#include <QtCore/QDebug>
+#include <QtCore/QString>
 
 namespace GGS {
   namespace Libtorrent {
@@ -45,6 +49,48 @@ namespace GGS {
 
         this->wrapperInternal->torrentResumedAlert(a.handle);
       }
+
+      void StatusNotificationHandler::operator()( libtorrent::hash_failed_alert const& a ) const
+      {
+        // Не очень хочется выводить это в лог, много и не особо информативно
+        //qDebug() << "StatusNotificationHandler hash_failed_alert: " << a.message().c_str();
+      }
+
+      void StatusNotificationHandler::operator()( libtorrent::torrent_checked_alert const& a ) const
+      {
+        DEBUG_LOG << "torrent_checked_alert: " << a.message().c_str();
+      }
+
+      void StatusNotificationHandler::operator()( libtorrent::metadata_received_alert const& a ) const
+      {
+        DEBUG_LOG << "metadata_received_alert: " << a.message().c_str();
+      }
+
+      void StatusNotificationHandler::operator()( libtorrent::external_ip_alert const& a ) const
+      {
+        DEBUG_LOG << "external_ip_alert: " << a.message().c_str();
+      }
+
+      void StatusNotificationHandler::operator()( libtorrent::listen_succeeded_alert const& a ) const
+      {
+        DEBUG_LOG << "listen_succeeded_alert: " << a.message().c_str();
+      }
+
+      void StatusNotificationHandler::operator()( libtorrent::torrent_added_alert const& a ) const
+      {
+        DEBUG_LOG << "add_torrent_alert: " << a.message().c_str();
+      }
+
+      void StatusNotificationHandler::operator()( libtorrent::trackerid_alert const& a ) const
+      {
+        DEBUG_LOG << "trackerid_alert: " << a.message().c_str();
+      }
+
+      void StatusNotificationHandler::operator()( libtorrent::torrent_removed_alert const& a ) const
+      {
+        DEBUG_LOG << "torrent_removed_alert: " << a.message().c_str();
+      }
+
     }
   }
 }

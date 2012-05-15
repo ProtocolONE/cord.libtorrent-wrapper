@@ -16,6 +16,7 @@ namespace GGS {
 
     TorrentConfig::TorrentConfig()
       : _isReloadRequired(false)
+      , _forceRehash(false)
     {
     }
 

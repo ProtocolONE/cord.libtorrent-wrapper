@@ -15,9 +15,6 @@
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/entry.hpp>
 
-#include <QtCore/QString>
-#include <QtCore/QDebug>
-
 namespace GGS {
   namespace Libtorrent
   {
@@ -29,39 +26,19 @@ namespace GGS {
 
         void operator()(libtorrent::save_resume_data_alert const& a) const;
 
-        void operator()(libtorrent::read_piece_alert const& a) const
-        {
-          qDebug() << "StorageNotificationHandler read_piece_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::read_piece_alert const& a) const;
 
-        void operator()(libtorrent::file_renamed_alert const& a) const
-        {
-          qDebug() << "StorageNotificationHandler file_renamed_alert: " << a.message().c_str();
-        }
-        void operator()(libtorrent::file_rename_failed_alert const& a) const
-        {
-          qDebug() << "StorageNotificationHandler file_rename_failed_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::file_renamed_alert const& a) const;
 
-        void operator()(libtorrent::storage_moved_alert const& a) const
-        {
-          qDebug() << "StorageNotificationHandler storage_moved_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::file_rename_failed_alert const& a) const;
 
-        void operator()(libtorrent::storage_moved_failed_alert const& a) const
-        {
-          qDebug() << "StorageNotificationHandler storage_moved_failed_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::storage_moved_alert const& a) const;
 
-        void operator()(libtorrent::torrent_deleted_alert const& a) const
-        {
-          qDebug() << "StorageNotificationHandler torrent_deleted_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::storage_moved_failed_alert const& a) const;
 
-        void operator()(libtorrent::cache_flushed_alert const& a) const
-        {
-          qDebug() << "StorageNotificationHandler cache_flushed_alert: " << a.message().c_str();
-        }
+        void operator()(libtorrent::torrent_deleted_alert const& a) const;
+
+        void operator()(libtorrent::cache_flushed_alert const& a) const;
       };
     }
   }
