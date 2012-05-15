@@ -3,7 +3,7 @@
 #include "SimpleDownloadTest.h"
 #include "StartStopDownloadTest.h"
 
-TEST(LibtorrentWrapper, downloadTest)
+TEST(LibtorrentWrapper, DISABLED_downloadTest)
 {
   SimpleDownloadTest test;
   ASSERT_TRUE(test.start());
@@ -14,7 +14,7 @@ TEST(LibtorrentWrapper, downloadTest)
   ASSERT_LT(0, test.trackerFailedEventCount);
 }
 
-TEST(LibtorrentWrapper, startStopDownloadTest)
+TEST(LibtorrentWrapper, DISABLED_startStopDownloadTest)
 {
   StartStopDownloadTest test;
   ASSERT_TRUE(test.start());
