@@ -18,7 +18,7 @@ void GGS::Libtorrent::AlertHandlers::TrackerNotificationHandler::operator()( lib
 {
   DEBUG_LOG << "TrackerNotificationHandler tracker_announce_alert: " << a.message().c_str();
 }
-
+  
 void GGS::Libtorrent::AlertHandlers::TrackerNotificationHandler::operator()( libtorrent::scrape_reply_alert const& a ) const
 {
   DEBUG_LOG << "TrackerNotificationHandler scrape_reply_alert: " << a.message().c_str();

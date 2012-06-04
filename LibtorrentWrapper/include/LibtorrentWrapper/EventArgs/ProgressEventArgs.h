@@ -44,26 +44,26 @@ namespace GGS
           CheckingResumeData
         };
 
-        void setProgress(float progress) { this->_progress = progress; }
-        float progress() const { return this->_progress; }
+        void setProgress(float progress);
+        float progress() const;
 
-        void setStatus(TorrentStatus status) { this->_status = status; }
-        TorrentStatus status() const { return this->_status; }
+        void setStatus(TorrentStatus status);
+        TorrentStatus status() const;
 
-        void setId(const QString& id) { this->_id = id; }
-        const QString& id() const { return this->_id; }
+        void setId(const QString& id);
+        const QString& id() const;
 
-        void setDownloadRate(int downloadRate) { this->_downloadRate = downloadRate; }
-        int downloadRate() const { return this->_downloadRate; }
+        void setDownloadRate(int downloadRate);
+        int downloadRate() const;
 
-        void setUploadRate(int uploadRate) { this->_uploadRate = uploadRate; }
-        int uploadRate() const { return this->_uploadRate; }
+        void setUploadRate(int uploadRate);
+        int uploadRate() const;
 
-        void setTotalWanted(qint64 totalWanted) { this->_totalWanted = totalWanted; }
-        qint64 totalWanted() const { return this->_totalWanted; }
+        void setTotalWanted(qint64 totalWanted);
+        qint64 totalWanted() const;
 
-        void setTotalWantedDone(qint64 totalWantedDone) { this->_totalWantedDone = totalWantedDone; }
-        qint64 totalWantedDone() const { return this->_totalWantedDone; }
+        void setTotalWantedDone(qint64 totalWantedDone);
+        qint64 totalWantedDone() const;
 
       private:
         QString _id;

@@ -36,6 +36,77 @@ namespace GGS
       ProgressEventArgs::~ProgressEventArgs()
       {
       }
+
+      void ProgressEventArgs::setProgress( float progress )
+      {
+        this->_progress = progress;
+      }
+
+      float ProgressEventArgs::progress() const
+      {
+        return this->_progress;
+      }
+
+      void ProgressEventArgs::setStatus( TorrentStatus status )
+      {
+        this->_status = status;
+      }
+
+      GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus ProgressEventArgs::status() const
+      {
+        return this->_status;
+      }
+
+      void ProgressEventArgs::setId( const QString& id )
+      {
+        this->_id = id;
+      }
+
+      const QString& ProgressEventArgs::id() const
+      {
+        return this->_id;
+      }
+
+      void ProgressEventArgs::setDownloadRate( int downloadRate )
+      {
+        this->_downloadRate = downloadRate;
+      }
+
+      int ProgressEventArgs::downloadRate() const
+      {
+        return this->_downloadRate;
+      }
+
+      void ProgressEventArgs::setUploadRate( int uploadRate )
+      {
+        this->_uploadRate = uploadRate;
+      }
+
+      int ProgressEventArgs::uploadRate() const
+      {
+        return this->_uploadRate;
+      }
+
+      void ProgressEventArgs::setTotalWanted( qint64 totalWanted )
+      {
+        this->_totalWanted = totalWanted;
+      }
+
+      qint64 ProgressEventArgs::totalWanted() const
+      {
+        return this->_totalWanted;
+      }
+
+      void ProgressEventArgs::setTotalWantedDone( qint64 totalWantedDone )
+      {
+        this->_totalWantedDone = totalWantedDone;
+      }
+
+      qint64 ProgressEventArgs::totalWantedDone() const
+      {
+        return this->_totalWantedDone;
+      }
+
     }
   }
 }

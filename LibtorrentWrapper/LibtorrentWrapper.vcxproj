@@ -75,6 +75,7 @@
       <Command>IF NOT "$(QGNACOMMONDIR)"=="" (
 xcopy /Y /I /R "$(TargetDir)*.dll" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\bin"
 xcopy /Y /I /R "$(TargetDir)*.lib" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\lib"
+xcopy /Y /I /R "$(TargetDir)*.pdb" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\pdb"
 @echo !!!!!!!!!!! Change post build event for copy headers !!!!!!!!!!!!!!!!!
 
 xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
@@ -113,6 +114,7 @@ EXIT /B 1
       <Command>IF NOT "$(QGNACOMMONDIR)"=="" (
 xcopy /Y /I /R "$(TargetDir)*.dll" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\bin"
 xcopy /Y /I /R "$(TargetDir)*.lib" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\lib"
+xcopy /Y /I /R "$(TargetDir)*.pdb" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\pdb"
 @echo !!!!!!!!!!! Change post build event for copy headers !!!!!!!!!!!!!!!!!
 
 xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
