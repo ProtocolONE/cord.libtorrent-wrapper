@@ -285,9 +285,9 @@ namespace GGS {
       } else {
         DEBUG_LOG << "force rehash for" << id;
       }
-
+      
       torrent_handle h = this->_session->add_torrent(p, ec);
-
+      
       if (ec) {
         QString str = QString::fromLocal8Bit(ec.message().c_str());
         CRITICAL_LOG << "start error" << str << "in" << id;
