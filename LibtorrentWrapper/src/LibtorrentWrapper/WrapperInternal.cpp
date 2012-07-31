@@ -683,5 +683,21 @@ namespace GGS {
       this->_session->set_settings(this->_sessionsSettings);
     }
 
+    void WrapperInternal::pauseSession()
+    {
+      if (!this->_session)
+        return;
+
+      this->_session->pause();
+    }
+
+    void WrapperInternal::resumeSession()
+    {
+      if (!this->_session)
+        return;
+
+      this->_session->resume();
+    }
+
   }
 }

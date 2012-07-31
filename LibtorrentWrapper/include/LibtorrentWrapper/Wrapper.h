@@ -131,6 +131,25 @@ namespace GGS {
       */
       void setMaxConnection(int maxConnection);
 
+    public slots:
+      /*!
+        \fn void Wrapper::pauseSession();
+        \brief Останавливаются все торренты.
+        \author Ilya.Tkachenko
+        \date 31.07.2012
+      */
+      void pauseSession();
+
+
+      /*!
+        \fn void Wrapper::resumeSession();
+        \brief Возобновляется работа торрента. Приэтом состояние торрентов возвращается на предыдущее перед вызовом
+               pauseSession().
+        \author Ilya.Tkachenko
+        \date 31.07.2012
+      */
+      void resumeSession();
+
     signals:
 
       /// <summary>Listening port changed. Do not call before InitEngine.</summary>

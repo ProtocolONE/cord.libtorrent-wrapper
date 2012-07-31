@@ -116,5 +116,15 @@ namespace GGS {
       this->_internalWrapper->setMaxConnection(maxConnection);
     }
 
+    void Wrapper::pauseSession()
+    {
+      this->_internalWrapper->pauseSession();
+    }
+
+    void Wrapper::resumeSession()
+    {
+      this->_internalWrapper->resumeSession();
+    }
+
   }
 }

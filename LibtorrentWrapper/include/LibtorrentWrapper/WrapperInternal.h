@@ -101,6 +101,9 @@ namespace GGS {
       void torrentUrlSeedAlert(const libtorrent::torrent_handle &handle, const std::string& url);
       void torrentErrorAlert(const libtorrent::torrent_handle &handle);
 
+      void pauseSession();
+      void resumeSession();
+
     signals:
       
       void listeningPortChanged(unsigned short port);
