@@ -31,6 +31,6 @@ void GGS::Libtorrent::AlertHandlers::TrackerNotificationHandler::operator()( lib
 
 void GGS::Libtorrent::AlertHandlers::TrackerNotificationHandler::operator()( libtorrent::dht_reply_alert const& a ) const
 {
-  DEBUG_LOG << "TrackerNotificationHandler dht_reply_alert: " << a.message().c_str();
+//  DEBUG_LOG << "TrackerNotificationHandler dht_reply_alert: " << a.message().c_str();
 }
 
