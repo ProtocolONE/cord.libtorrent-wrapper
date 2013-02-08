@@ -8,32 +8,33 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 ****************************************************************************/
 
-#ifndef _GGS_LIBTORRENT_TORRENTSTATE_H_
-#define _GGS_LIBTORRENT_TORRENTSTATE_H_
+#pragma once
 
 #include <libtorrent/torrent_handle.hpp>
 #include <QtCore/QString>
 namespace GGS {
-  namespace Libtorrent
-  {
+  namespace Libtorrent {
+
     class TorrentState
     {
     public:
       TorrentState();
       ~TorrentState();
 
-      void setHandle(libtorrent::torrent_handle handle) { this->_handle = handle; }
-      const libtorrent::torrent_handle &handle() const { return this->_handle; }
+      void setHandle(libtorrent::torrent_handle handle);
+      const libtorrent::torrent_handle &handle() const;
 
-      void setId(const QString& id) { this->_id = id; }
-      const QString& id() const { return this->_id; }
+      void setId(const QString& id);
+      const QString& id() const;
+
+      bool backgroundSeeding() const;
+      void setBackgroundSeeding(bool value);
 
     private:
       QString _id;
       libtorrent::torrent_handle _handle;
+      bool _backgroundSeeding;
     };
 
   }
 }
-
-#endif //_GGS_LIBTORRENT_TORRENTSTATE_H_

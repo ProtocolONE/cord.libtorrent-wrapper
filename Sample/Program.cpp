@@ -111,7 +111,7 @@ void Program::quit()
   QCoreApplication::quit();
 }
 
-void Program::startTorrent( QString id )
+void Program::startTorrent(QString id)
 {
   QString root = QCoreApplication::applicationDirPath();
   QString torrentPath = root;
@@ -123,6 +123,7 @@ void Program::startTorrent( QString id )
   //downloadPath.append(QString::fromLocal8Bit("/игра_game/"));
   downloadPath.append(QString::fromLocal8Bit("/game/"));
   downloadPath.append(id);
+  downloadPath.append(QString::fromLocal8Bit("Игра"));
   downloadPath.append("/");
 
   this->_config.setDownloadPath(downloadPath);
@@ -148,6 +149,7 @@ void Program::restartTorrent( QString id )
   //downloadPath.append(QString::fromLocal8Bit("/игра_game/"));
   downloadPath.append(QString::fromLocal8Bit("/game/"));
   downloadPath.append(id);
+  downloadPath.append(QString::fromLocal8Bit("Игра"));
   downloadPath.append("/");
 
   this->_config.setDownloadPath(downloadPath);

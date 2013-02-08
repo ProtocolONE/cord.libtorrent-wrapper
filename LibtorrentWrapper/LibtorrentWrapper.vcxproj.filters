@@ -85,6 +85,15 @@
     <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\TrackerNotificationHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\LibtorrentWrapper\ResumeInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ResumeInfo.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ResumeInfo.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\LibtorrentWrapper\EventArgs\ProgressEventArgs.h">
@@ -94,6 +103,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="include\LibtorrentWrapper\WrapperInternal.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="include\LibtorrentWrapper\ResumeInfo.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

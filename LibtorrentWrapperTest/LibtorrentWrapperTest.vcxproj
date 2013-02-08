@@ -78,7 +78,7 @@ xcopy /Y /I /R /E "$(QTDIR)\bin\QtXmlPatterns%D%4.dll" "$(TargetDir)"
 xcopy /Y /I /R /E "$(ProjectDir)\fixtures\*.*" "$(TargetDir)\fixtures"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy /Y /I /R $(TargetDir)..\..\LibtorrentWrapper\$(ConfigurationName)\*.dll $(TargetDir)</Command>
+      <Command>xcopy /Y /I /R "$(TargetDir)..\..\LibtorrentWrapper\$(ConfigurationName)\*.dll" "$(TargetDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,7 +115,7 @@ xcopy /Y /I /R /E "$(QTDIR)\bin\QtXmlPatterns%D%4.dll" "$(TargetDir)"
 xcopy /Y /I /R /E "$(ProjectDir)\fixtures\*.*" "$(TargetDir)\fixtures"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy /Y /I /R $(TargetDir)..\..\LibtorrentWrapper\$(ConfigurationName)\*.dll $(TargetDir)</Command>
+      <Command>xcopy /Y /I /R "$(TargetDir)..\..\LibtorrentWrapper\$(ConfigurationName)\*.dll" "$(TargetDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

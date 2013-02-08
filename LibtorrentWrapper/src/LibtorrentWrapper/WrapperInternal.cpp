@@ -11,7 +11,10 @@
 #include <LibtorrentWrapper/WrapperInternal>
 #include <QtCore/QFileInfo>
 
+#define SIGNAL_CONNECT_CHECK(X) { bool result = X; Q_ASSERT_X(result, __FUNCTION__ , #X); }
+
 using namespace libtorrent;
+
 namespace GGS {
   namespace Libtorrent
   {
@@ -29,8 +32,8 @@ namespace GGS {
       this->_trackerNotificationHandler.wrapperInternal = this;
       this->_storageNotificationHandler.wrapperInternal = this;
 
-      DEBUG_LOG << "alertTimerTick connect is " << QObject::connect(&this->_alertTimer, SIGNAL(timeout()), this, SLOT(alertTimerTick()));
-      DEBUG_LOG << "progressTimerTick connect is " <<QObject::connect(&this->_progressTimer, SIGNAL(timeout()), this, SLOT(progressTimerTick()));
+      SIGNAL_CONNECT_CHECK(QObject::connect(&this->_alertTimer, SIGNAL(timeout()), this, SLOT(alertTimerTick())));
+      SIGNAL_CONNECT_CHECK(QObject::connect(&this->_progressTimer, SIGNAL(timeout()), this, SLOT(progressTimerTick())));
     }
 
     WrapperInternal::~WrapperInternal()
@@ -40,14 +43,12 @@ namespace GGS {
 
     void WrapperInternal::initEngine()
     {
-      //using namespace libtorrent;
-
       // 1. construct a session
       // 2. load_state()
       // 3. add_extension()
       // 4. start DHT, LSD, UPnP, NAT-PMP etc
 
-      this->_sessionsSettings.user_agent = "qgna/" LIBTORRENT_VERSION;
+      this->_sessionsSettings.user_agent = std::string("qgna/").append(LIBTORRENT_VERSION);
       this->_sessionsSettings.optimize_hashing_for_speed = true;
       this->_sessionsSettings.disk_cache_algorithm = session_settings::largest_contiguous;
       this->_sessionsSettings.dont_count_slow_torrents = true;
@@ -76,8 +77,7 @@ namespace GGS {
 
       error_code ec;
       this->_session->listen_on(std::make_pair(this->_startupListeningPort, this->_startupListeningPort), ec);
-      if (ec) 
-      {
+      if (ec) {
         DEBUG_LOG << "can't listen on " << this->_startupListeningPort << " error code " << ec;
         emit this->listenFailed(this->_startupListeningPort, ec.value());
       }
@@ -85,6 +85,7 @@ namespace GGS {
       this->loadSessionState();
       this->_session->set_settings(this->_sessionsSettings);
 
+      QTimer::singleShot(300000, this, SLOT(backgroundSeedStart()));
       this->_alertTimer.start(100);
       this->_progressTimer.start(1000);
     }
@@ -220,9 +221,10 @@ namespace GGS {
       QMap<QString, TorrentState*>::const_iterator it = this->_idToTorrentState.constBegin();
       QMap<QString, TorrentState*>::const_iterator end = this->_idToTorrentState.constEnd();
 
-      for(; it != end; ++it)
-      {
+      for(; it != end; ++it) {
         TorrentState *state = it.value();
+        if (state->backgroundSeeding())
+          continue;
 
         torrent_handle handle = state->handle();
         if (!handle.is_valid())
@@ -251,8 +253,17 @@ namespace GGS {
       this->_torrentsMapLock.unlock();
     }
 
-    void WrapperInternal::loadAndStartTorrent(const QString& id, const TorrentConfig &config)
+    void WrapperInternal::loadAndStartTorrent(const QString& id, const TorrentConfig &config, bool backgroudSeeding)
     {
+      ResumeInfo resumeInfo;
+      resumeInfo.setId(id);
+      resumeInfo.setSavePath(config.downloadPath());
+      resumeInfo.setTorrentPath(config.pathToTorrentFile());
+      this->_resumeInfo[id] = resumeInfo;
+
+      if (backgroudSeeding) 
+        DEBUG_LOG << "background " << id;
+
       error_code ec;
       const wchar_t *path = reinterpret_cast<const wchar_t*>(config.pathToTorrentFile().utf16());
       torrent_info *torrentInfo = new torrent_info(path, ec);
@@ -265,7 +276,7 @@ namespace GGS {
       }
 
       add_torrent_params p;
-      p.flags = add_torrent_params::flag_override_resume_data;// | add_torrent_params::flag_paused;
+      p.flags = add_torrent_params::flag_override_resume_data;
       p.ti = torrentInfo;
 
       // Должен быть определен дефайн UNICODE
@@ -298,6 +309,7 @@ namespace GGS {
       TorrentState *state = new TorrentState();
       state->setId(id);
       state->setHandle(h);
+      state->setBackgroundSeeding(backgroudSeeding);
 
       this->_idToTorrentState[id] = state;
       QString infohash = QString::fromStdString(torrentInfo->info_hash().to_string());
@@ -343,18 +355,22 @@ namespace GGS {
 
       QString resumeFilePath = this->getFastResumeFilePath(state->id());
       this->createDirectoryIfNotExists(resumeFilePath);
-
-      const wchar_t *resumePath = reinterpret_cast<const wchar_t*>(resumeFilePath.utf16());
-      boost::filesystem::ofstream out(resumePath, std::ios_base::binary);
-      out.unsetf(std::ios_base::skipws);
-      bencode(std::ostream_iterator<char>(out), *resumeData);
-      out.close();
+      try {
+        const wchar_t *resumePath = reinterpret_cast<const wchar_t*>(resumeFilePath.utf16());
+        boost::filesystem::ofstream out(resumePath, std::ios_base::binary);
+        out.unsetf(std::ios_base::skipws);
+        bencode(std::ostream_iterator<char>(out), *resumeData);
+        out.close();
+      } catch(boost::filesystem::filesystem_error& err) {
+        DEBUG_LOG << err.what();
+      } catch(std::exception& stdExc) {
+        DEBUG_LOG << stdExc.what();
+      }
     }
 
     QString WrapperInternal::getFastResumeFilePath(const QString& id)
     {
-      QString resumeFilePath = QString("%1/%2.resume").arg(this->_torrentConfigDirectoryPath, id);
-      return resumeFilePath;
+      return QString("%1/%2.resume").arg(this->_torrentConfigDirectoryPath, id);
     }
 
     void WrapperInternal::shutdown()
@@ -367,15 +383,13 @@ namespace GGS {
       this->_session->stop_lsd();
       this->_session->stop_upnp();
       this->_session->stop_natpmp();
-      this->_session->stop_dht();
 
       int numResumeData = 0;
 
       QMap<QString, TorrentState*>::const_iterator it = this->_idToTorrentState.constBegin();
       QMap<QString, TorrentState*>::const_iterator end = this->_idToTorrentState.constEnd();
 
-      for(; it != end; ++it)
-      {
+      for(; it != end; ++it) {
         torrent_handle h = it.value()->handle();
         if (!h.is_valid()) 
           continue;
@@ -390,37 +404,35 @@ namespace GGS {
         ++numResumeData;
       }
 
-      while (numResumeData > 0)
-      {
+      while (numResumeData > 0) {
         alert const* a = this->_session->wait_for_alert(seconds(this->_fastResumeWaitTimeInSec));
-        if (a == 0)
-        {
+        if (a == 0) {
           WARNING_LOG << "failed to wait for all fast resume saved";
           break;
         }
 
         std::auto_ptr<alert> holder = this->_session->pop_alert();
         const save_resume_data_failed_alert *failAlert = alert_cast<save_resume_data_failed_alert>(a);
-        if (failAlert)
-        {
+        if (failAlert) {
           WARNING_LOG << "failed to save fast resume" << QString::fromStdString(failAlert->message());
           --numResumeData;
           continue;
         }
 
         save_resume_data_alert const* rd = alert_cast<save_resume_data_alert>(a);
-        if (!rd) 
+        if (!rd)
           continue;
 
         --numResumeData;
 
-        if (!rd->resume_data) 
+        if (!rd->resume_data)
           continue;
 
         this->saveFastResumeWithoutLock(rd->handle, rd->resume_data);
       }
 
       this->saveSessionState();
+      this->_session->stop_dht();
 
       delete this->_session;
       this->_session = 0;
@@ -440,12 +452,12 @@ namespace GGS {
       QMutexLocker lock(&this->_torrentsMapLock);
       DEBUG_LOG << "torrentPausedAlert";
       TorrentState *state = getStateByTorrentHandle(handle);
+      if (!state || state->backgroundSeeding() || !handle.is_valid())
+        return;
 
-      if (state && handle.is_valid()) {
-        handle.save_resume_data();
-        this->emitTorrentProgress(state->id(), handle);
-        emit this->torrentPaused(state->id());
-      }
+      handle.save_resume_data();
+      this->emitTorrentProgress(state->id(), handle);
+      emit this->torrentPaused(state->id());
     }
 
     void WrapperInternal::emitTorrentProgress(const QString& id, const torrent_handle &handle)
@@ -468,7 +480,7 @@ namespace GGS {
     {
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
-      if (state)
+      if (state && !state->backgroundSeeding())
         emit this->trackerFailed(state->id(), failCountInARow, httpStatusCode);
     }
 
@@ -476,7 +488,7 @@ namespace GGS {
     {
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
-      if (state)
+      if (state && !state->backgroundSeeding())
         emit this->fileError(state->id(), filePath, errorCode);
     }
 
@@ -489,33 +501,52 @@ namespace GGS {
     {
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
-      if (state && handle.is_valid()) {
-        emit this->torrentStatusChanged(state->id(), this->convertStatus(oldState), this->convertStatus(newState));
-        this->emitTorrentProgress(state->id(), handle);
+      if (!state || !handle.is_valid())
+        return;
+
+      if (state->backgroundSeeding()) {
+        if (newState == torrent_status::downloading) {
+          torrent_status status = handle.status(0);
+          if (!status.is_finished)
+            state->handle().pause();
+        }
+
+        return;
       }
+      
+      emit this->torrentStatusChanged(state->id(), this->convertStatus(oldState), this->convertStatus(newState));
+      this->emitTorrentProgress(state->id(), handle);
     }
 
     void WrapperInternal::torrentFinishedAlert(const torrent_handle &handle)
     {
-      if (!handle.is_valid()) {
+      if (!handle.is_valid())
         return;
-      }
 
       handle.save_resume_data();
 
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
-      if (state) {
-        emit this->torrentDownloadFinished(state->id());
-        this->emitTorrentProgress(state->id(), handle);
-      }
+
+      if (!state)
+        return;
+
+      // Торрент скачан и готов к фоновому сидированию
+      this->_resumeInfo[state->id()].setFinished(true);
+      this->saveSessionState();
+
+      if (state->backgroundSeeding())
+        return;
+
+      emit this->torrentDownloadFinished(state->id());
+      this->emitTorrentProgress(state->id(), handle);
     }
 
     void WrapperInternal::torrentResumedAlert(const torrent_handle &handle)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
-      if (state)
+      if (state && !state->backgroundSeeding())
         emit this->torrentResumed(state->id());
     }
 
@@ -550,16 +581,85 @@ namespace GGS {
     void WrapperInternal::saveSessionState()
     {
       entry sessionState;
-      this->_session->save_state(sessionState);
+      this->_session->save_state(sessionState, 
+        libtorrent::session::save_settings |
+        libtorrent::session::save_dht_settings |
+        libtorrent::session::save_dht_state |
+        libtorrent::session::save_feeds);
+
+      entry resumeEntry;
+      Q_FOREACH(ResumeInfo resumeInfo, this->_resumeInfo) {
+        if (!resumeInfo.finished())
+          continue;
+
+        entry info;
+        std::string id(resumeInfo.id().toUtf8());
+        std::string torrentPath(resumeInfo.torrentPath().toUtf8());
+        std::string savePath(resumeInfo.savePath().toUtf8());
+
+        info["torrentPath"] = torrentPath;
+        info["savePath"] = savePath;
+
+        resumeEntry[id] = info;
+      }
+
+      sessionState["GGSResumeInfo"] = resumeEntry;
 
       QString resumeFilePath = this->getSessionStatePath();
       this->createDirectoryIfNotExists(resumeFilePath);
 
       const wchar_t *resumePath = reinterpret_cast<const wchar_t*>(resumeFilePath.utf16());
-      boost::filesystem::ofstream out(resumePath, std::ios_base::binary);
-      out.unsetf(std::ios_base::skipws);
-      bencode(std::ostream_iterator<char>(out), sessionState);
-      out.close();
+      try {
+        boost::filesystem::ofstream out(resumePath, std::ios_base::binary);
+        out.unsetf(std::ios_base::skipws);
+        bencode(std::ostream_iterator<char>(out), sessionState);
+        out.close();
+      } catch(boost::filesystem::filesystem_error& err) {
+        DEBUG_LOG << err.what();
+      } catch(std::exception& stdExc) {
+        DEBUG_LOG << stdExc.what();
+      }
+    }
+
+    void WrapperInternal::loadSessionState()
+    {
+      std::vector<char> in;
+      error_code ec;
+      QString sessionStatePath = this->getSessionStatePath();
+      QFileInfo fileInfo(sessionStatePath);
+      if (!fileInfo.exists()) {
+        DEBUG_LOG << "session state file" << sessionStatePath << "not exists";
+        return;
+      }
+
+      if (load_file(sessionStatePath.toUtf8().data(), in, ec) != 0) {
+        CRITICAL_LOG << "Can't load session state from" << sessionStatePath <<"with error code:" << ec;
+        return;
+      }
+
+      lazy_entry e;
+      if (lazy_bdecode(&in[0], &in[0] + in.size(), e, ec) != 0) 
+        return;
+
+      this->_session->load_state(e);
+
+      lazy_entry *resumeInfo = e.dict_find("GGSResumeInfo");
+      if (!resumeInfo) 
+        return;
+
+      int size = resumeInfo->dict_size();
+      for (int i = 0; i < size; ++i) {
+        std::pair<std::string, lazy_entry const*> p = resumeInfo->dict_at(i);
+        QString id = QString::fromUtf8(p.first.c_str());
+        QString torrentPath = QString::fromUtf8(p.second->dict_find_string_value("torrentPath").c_str());
+        QString savePath = QString::fromUtf8(p.second->dict_find_string_value("savePath").c_str());
+        ResumeInfo info;
+        info.setId(id);
+        info.setFinished(true);
+        info.setTorrentPath(torrentPath);
+        info.setSavePath(savePath);
+        this->_resumeInfo[id] = info;
+      }
     }
 
     unsigned short WrapperInternal::listeningPort() const
@@ -613,30 +713,7 @@ namespace GGS {
 
     QString WrapperInternal::getSessionStatePath()
     {
-      QString resumeFilePath = QString("%1/.session_state").arg(this->_torrentConfigDirectoryPath);
-      return resumeFilePath;
-    }
-
-    void WrapperInternal::loadSessionState()
-    {
-      std::vector<char> in;
-      error_code ec;
-      QString sessionStatePath = this->getSessionStatePath();
-      QFileInfo fileInfo(sessionStatePath);
-      if (!fileInfo.exists()) {
-        DEBUG_LOG << "session state file" << sessionStatePath << "not exists";
-        return;
-      }
-
-      if (load_file(sessionStatePath.toUtf8().data(), in, ec) != 0) {
-        CRITICAL_LOG << "Can't load session state from" << sessionStatePath <<"with error code:" << ec;
-        return;
-      }
-
-      lazy_entry e;
-      int result = lazy_bdecode(&in[0], &in[0] + in.size(), e, ec);
-      if (result == 0)
-        this->_session->load_state(e);
+      return QString("%1/.session_state").arg(this->_torrentConfigDirectoryPath);
     }
 
     void WrapperInternal::torrentUrlSeedAlert(const torrent_handle &handle, const std::string& url )
@@ -662,7 +739,7 @@ namespace GGS {
 
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
-      if (state)
+      if (state && !state->backgroundSeeding())
         emit this->torrentError(state->id());
     }      
 
@@ -699,5 +776,24 @@ namespace GGS {
       this->_session->resume();
     }
 
+    void WrapperInternal::backgroundSeedStart()
+    {
+      QMutexLocker lock(&this->_torrentsMapLock);
+
+      Q_FOREACH(ResumeInfo info, this->_resumeInfo) {
+        if (!info.finished())
+          continue;
+
+        if (this->_idToTorrentState.contains(info.id()))
+          continue;
+
+        TorrentConfig config;
+        config.setDownloadPath(info.savePath());
+        config.setIsForceRehash(false);
+        config.setIsReloadRequired(false);
+        config.setPathToTorrentFile(info.torrentPath());
+        this->loadAndStartTorrent(info.id(), config, true);
+      }
+    }
   }
 }

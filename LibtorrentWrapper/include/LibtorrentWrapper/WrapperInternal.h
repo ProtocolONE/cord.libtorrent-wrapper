@@ -13,6 +13,7 @@
 
 #include <LibtorrentWrapper/TorrentConfig>
 #include <LibtorrentWrapper/TorrentState>
+#include <LibtorrentWrapper/ResumeInfo>
 #include <LibtorrentWrapper/EventArgs/ProgressEventArgs>
 #include <LibtorrentWrapper/AlertHandlers/ErrorNotificationHandler>
 #include <LibtorrentWrapper/AlertHandlers/StatusNotificationHandler>
@@ -25,6 +26,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/entry.hpp>
+#include <libtorrent/lazy_entry.hpp>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/alert.hpp>
 #include <libtorrent/alert_types.hpp>
@@ -49,8 +51,8 @@
 #include <QtCore/QDebug>
 
 namespace GGS {
-  namespace Libtorrent
-  {
+  namespace Libtorrent {
+
     class WrapperInternal : public QObject
     {
       Q_OBJECT
@@ -109,7 +111,10 @@ namespace GGS {
       void listeningPortChanged(unsigned short port);
       void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
 
-      void torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
+      void torrentStatusChanged(QString id, 
+        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, 
+        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
+
       void torrentDownloadFinished(QString id);
       void torrentResumed(QString id);
       void torrentPaused(QString id);
@@ -124,18 +129,18 @@ namespace GGS {
     private slots:
       void alertTimerTick();
       void progressTimerTick();
-
+      void backgroundSeedStart();
 
     private:
       void createDirectoryIfNotExists(const QString &resumeFilePath );
-      void loadAndStartTorrent(const QString& id, const TorrentConfig &config);
+      void loadAndStartTorrent(const QString& id, const TorrentConfig &config, bool backgroudSeeding = false);
       GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus convertStatus(const libtorrent::torrent_status::state_t status);
       QString getFastResumeFilePath(const QString& id);
       inline TorrentState* getStateByTorrentHandle(const libtorrent::torrent_handle &handle);
       inline TorrentState* getStateById(const QString& id);
 
       void emitTorrentProgress(const QString& id, const libtorrent::torrent_handle &handle);
-      void saveFastResumeWithoutLock(const libtorrent::torrent_handle &handle, boost::shared_ptr<libtorrent::entry> resumeData );
+      void saveFastResumeWithoutLock(const libtorrent::torrent_handle &handle, boost::shared_ptr<libtorrent::entry> resumeData);
       void saveSessionState();
       void cleanIdToTorrentStateMap();
 
@@ -161,6 +166,8 @@ namespace GGS {
       QMutex _torrentsMapLock;
       QMap<QString, TorrentState*> _idToTorrentState;
       QMap<QString, TorrentState*> _infohashToTorrentState;
+
+      QMap<QString, ResumeInfo> _resumeInfo;
     };
   }
 }

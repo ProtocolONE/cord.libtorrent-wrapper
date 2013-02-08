@@ -11,14 +11,44 @@
 #include <LibtorrentWrapper/TorrentState>
 
 namespace GGS {
-  namespace Libtorrent
-  {
-    TorrentState::TorrentState()
+  namespace Libtorrent {
+
+    TorrentState::TorrentState() : _backgroundSeeding(false)
     {
     }
 
     TorrentState::~TorrentState()
     {
+    }
+
+    void TorrentState::setHandle(libtorrent::torrent_handle handle)
+    {
+      this->_handle = handle;
+    }
+
+    const libtorrent::torrent_handle& TorrentState::handle() const
+    {
+      return this->_handle;
+    }
+
+    void TorrentState::setId(const QString& id)
+    {
+      this->_id = id;
+    }
+
+    const QString& TorrentState::id() const
+    {
+      return this->_id;
+    }
+
+    bool TorrentState::backgroundSeeding() const
+    {
+      return this->_backgroundSeeding;
+    }
+
+    void TorrentState::setBackgroundSeeding(bool value)
+    {
+      this->_backgroundSeeding = value;
     }
 
   }
