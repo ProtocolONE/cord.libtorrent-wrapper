@@ -100,6 +100,10 @@ namespace GGS {
         return;
       }
 
+      DEBUG_LOG << "start " << id
+        << " background " << state->backgroundSeeding()
+        << " reload require  " << config.isReloadRequired();
+
       if (config.isReloadRequired()) {
         this->_session->remove_torrent(state->handle());
         this->_idToTorrentState.remove(id);
@@ -449,9 +453,13 @@ namespace GGS {
 
     void WrapperInternal::torrentPausedAlert(const torrent_handle &handle)
     {
-      QMutexLocker lock(&this->_torrentsMapLock);
-      DEBUG_LOG << "torrentPausedAlert";
+      QMutexLocker lock(&this->_torrentsMapLock);      
       TorrentState *state = getStateByTorrentHandle(handle);
+
+      DEBUG_LOG << "torrentPausedAlert"
+        << (state ? state->id() : "")
+        << (state ? state->backgroundSeeding() : "");
+
       if (!state || state->backgroundSeeding() || !handle.is_valid())
         return;
 
@@ -504,6 +512,11 @@ namespace GGS {
       if (!state || !handle.is_valid())
         return;
 
+       DEBUG_LOG << "torrentStatusChangedAlert " << state->id() 
+         << " old " << oldState 
+         << " new " << newState
+         << " background " << state->backgroundSeeding();
+
       if (state->backgroundSeeding()) {
         if (newState == torrent_status::downloading) {
           torrent_status status = handle.status(0);
@@ -530,6 +543,9 @@ namespace GGS {
 
       if (!state)
         return;
+
+      DEBUG_LOG << "torrentFinishedAlert " << state->id() 
+        << " background " << state->backgroundSeeding();
 
       // Торрент скачан и готов к фоновому сидированию
       this->_resumeInfo[state->id()].setFinished(true);
