@@ -10,6 +10,7 @@
 
 #include <LibtorrentWrapper/WrapperInternal>
 #include <QtCore/QFileInfo>
+#include <QtCore/QSysInfo>
 
 #define SIGNAL_CONNECT_CHECK(X) { bool result = X; Q_ASSERT_X(result, __FUNCTION__ , #X); }
 
@@ -56,6 +57,10 @@ namespace GGS {
       this->_sessionsSettings.allow_reordered_disk_operations = true;
       this->_sessionsSettings.no_connect_privileged_ports = true;
       this->_sessionsSettings.lock_files = false;
+      
+      // QNGA-278 Ограничим полуоткрытые для XP
+      if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
+        this->_sessionsSettings.half_open_limit = 5;
 
       this->_session = new session(fingerprint("LT", LIBTORRENT_VERSION_MAJOR, LIBTORRENT_VERSION_MINOR, 0, 0)
         , session::start_default_features | session::add_default_plugins
