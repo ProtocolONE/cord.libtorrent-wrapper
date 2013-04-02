@@ -58,7 +58,7 @@ namespace GGS {
       this->_sessionsSettings.no_connect_privileged_ports = true;
       this->_sessionsSettings.lock_files = false;
       
-      // QNGA-278 Ограничим полуоткрытые для XP
+      // QGNA-278 Ограничим полуоткрытые для XP
       if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
         this->_sessionsSettings.half_open_limit = 5;
 
@@ -117,6 +117,7 @@ namespace GGS {
         delete state;
         this->loadAndStartTorrent(id, config);
       } else {
+        state->setBackgroundSeeding(false);
         torrent_handle handle = state->handle();
         
         // UNDONE: Тут могут остаьтся пробелмы с другими стадиями.
@@ -509,8 +510,8 @@ namespace GGS {
     {
       emit this->listenFailed(port, errorCode);
     }
-
-    void WrapperInternal::torrentStatusChangedAlert(const torrent_handle &handle, torrent_status::state_t oldState , torrent_status::state_t newState )
+    
+    void WrapperInternal::torrentStatusChangedAlert(const torrent_handle &handle, torrent_status::state_t oldState , torrent_status::state_t newState)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
       TorrentState *state = this->getStateByTorrentHandle(handle);
