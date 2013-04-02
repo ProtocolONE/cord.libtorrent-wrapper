@@ -34,6 +34,7 @@ namespace GGS {
       connect(this->_internalWrapper, SIGNAL(torrentPaused(QString)), this, SIGNAL(torrentPaused(QString)));
 
       connect(this->_internalWrapper, SIGNAL(torrentError(QString)), this, SIGNAL(torrentError(QString)));
+      connect(this->_internalWrapper, SIGNAL(torrentRehashed(QString, bool)), this, SIGNAL(torrentRehashed(QString, bool)));
     }
 
     Wrapper::~Wrapper()
@@ -126,5 +127,40 @@ namespace GGS {
       this->_internalWrapper->resumeSession();
     }
 
+    bool Wrapper::seedEnabled() const
+    {
+      return this->_internalWrapper->seedEnabled();
+    }
+
+    void Wrapper::setSeedEnabled(bool value)
+    {
+      this->_internalWrapper->setSeedEnabled(value);
+    }
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+    bool Wrapper::getInfoHash(const QString& path, QString& result)
+    {
+      return this->_internalWrapper->getInfoHash(path, result);
+    }
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
+    bool Wrapper::getFileList(const QString& path, QList<QString> &result)
+    {
+      return this->_internalWrapper->getFileList(path, result);
+    }
+
+<<<<<<< HEAD
+=======
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
   }
 }

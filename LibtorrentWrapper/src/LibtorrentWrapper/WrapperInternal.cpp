@@ -12,6 +12,8 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QSysInfo>
 
+#include <libtorrent/hasher.hpp>
+
 #define SIGNAL_CONNECT_CHECK(X) { bool result = X; Q_ASSERT_X(result, __FUNCTION__ , #X); }
 
 using namespace libtorrent;
@@ -22,12 +24,28 @@ namespace GGS {
     WrapperInternal::WrapperInternal(QObject *parent)
       : QObject(parent)
       , _session(0)
+      , _seedEnabled(false)
+<<<<<<< HEAD
+<<<<<<< HEAD
+      , _shuttingDown(false)
+      , _initialized(false)
+<<<<<<< HEAD
+=======
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+      , _shuttingDown(false)
+      , _initialized(false)
+>>>>>>> 52c0942... QGNA-295 Добавил проверки - создан ли врапепр.
+=======
+	  , _lastDirectDownloaded(0)
+	  , _lastPeerDownloaded(0)
+>>>>>>> 017b74e... QGNA-471 Fixed bug with direct/peer download rates, spelling fix: playloadUploadRate -> payloadUploadRate
     {
       this->_fastResumeWaitTimeInSec = 30;
       this->_fastresumeCounterMax = 40;
       this->_fastresumeCounter = 0;
       this->_startupListeningPort = 11888;
-      
+
       this->_errorNotificationHandler.wrapperInternal = this;
       this->_statusNotificationHandler.wrapperInternal = this;
       this->_trackerNotificationHandler.wrapperInternal = this;
@@ -44,11 +62,15 @@ namespace GGS {
 
     void WrapperInternal::initEngine()
     {
+      QMutexLocker lock(&this->_torrentsMapLock);
+
+      if (this->_shuttingDown)
+        return;
+
       // 1. construct a session
       // 2. load_state()
       // 3. add_extension()
       // 4. start DHT, LSD, UPnP, NAT-PMP etc
-
       this->_sessionsSettings.user_agent = std::string("qgna/").append(LIBTORRENT_VERSION);
       this->_sessionsSettings.optimize_hashing_for_speed = true;
       this->_sessionsSettings.disk_cache_algorithm = session_settings::largest_contiguous;
@@ -57,7 +79,31 @@ namespace GGS {
       this->_sessionsSettings.allow_reordered_disk_operations = true;
       this->_sessionsSettings.no_connect_privileged_ports = true;
       this->_sessionsSettings.lock_files = false;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d29ae78... QGNA-407 При каком-то из обновлений произошел регресс в система скачивания игр
       
+      this->_sessionsSettings.prefer_udp_trackers = false;
+      this->_sessionsSettings.rate_limit_utp = true;
+      this->_sessionsSettings.tick_interval = 90;
+      this->_sessionsSettings.share_mode_target = 2;
+      this->_sessionsSettings.choking_algorithm = session_settings::bittyrant_choker;
+      this->_sessionsSettings.torrent_connect_boost = 20; 
+      this->_sessionsSettings.utp_num_resends = 4;
+      this->_sessionsSettings.allow_multiple_connections_per_ip = true;
+      this->_sessionsSettings.max_failcount = 1;
+      this->_sessionsSettings.min_reconnect_time = 30;
+      this->_sessionsSettings.peer_connect_timeout = 10;
+      this->_sessionsSettings.inactivity_timeout = 180;
+      this->_sessionsSettings.mixed_mode_algorithm = session_settings::prefer_tcp;
+      
+<<<<<<< HEAD
+=======
+
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+>>>>>>> d29ae78... QGNA-407 При каком-то из обновлений произошел регресс в система скачивания игр
       // QGNA-278 Ограничим полуоткрытые для XP
       if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
         this->_sessionsSettings.half_open_limit = 5;
@@ -74,11 +120,10 @@ namespace GGS {
       this->_session->start_lsd();
       this->_session->start_upnp();
       this->_session->start_natpmp();
-
+      
       this->_session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"), 6881));
       this->_session->add_dht_router(std::make_pair(std::string("router.utorrent.com"), 6881));
       this->_session->add_dht_router(std::make_pair(std::string("router.bitcomet.com"), 6881));
-      this->_session->start_dht();
 
       error_code ec;
       this->_session->listen_on(std::make_pair(this->_startupListeningPort, this->_startupListeningPort), ec);
@@ -87,17 +132,25 @@ namespace GGS {
         emit this->listenFailed(this->_startupListeningPort, ec.value());
       }
 
+      this->_session->start_dht();
+
       this->loadSessionState();
       this->_session->set_settings(this->_sessionsSettings);
 
-      QTimer::singleShot(300000, this, SLOT(backgroundSeedStart()));
+      if (this->_seedEnabled)
+        QTimer::singleShot(300000, this, SLOT(backgroundSeedStart()));
+
       this->_alertTimer.start(100);
       this->_progressTimer.start(1000);
+
+      this->_initialized = true;
     }
 
     void WrapperInternal::start(const QString& id, TorrentConfig& config)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
 
       TorrentState *state = this->getStateById(id);
       if (!state) {
@@ -109,6 +162,20 @@ namespace GGS {
         << " background " << state->backgroundSeeding()
         << " reload require  " << config.isReloadRequired();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+      if (state->pathToTorrent() != config.pathToTorrentFile())
+        config.setIsReloadRequired(true);
+=======
+      if (state->pathToTorrent() != config.pathToTorrentFile()) {
+        config.setIsReloadRequired(true);
+      }
+>>>>>>> 78744f6... QGNA-295 Запоминаем путь для torrent файла
+=======
+      if (state->pathToTorrent() != config.pathToTorrentFile())
+        config.setIsReloadRequired(true);
+>>>>>>> 205f687... QGNA-295 Код ревью.
+      
       if (config.isReloadRequired()) {
         this->_session->remove_torrent(state->handle());
         this->_idToTorrentState.remove(id);
@@ -119,13 +186,25 @@ namespace GGS {
       } else {
         state->setBackgroundSeeding(false);
         torrent_handle handle = state->handle();
-        
+
         // UNDONE: Тут могут остаьтся пробелмы с другими стадиями.
         if (handle.is_valid()) {
-          if (handle.status().state == torrent_status::seeding)
-            emit this->torrentDownloadFinished(id);
-          else 
-            handle.resume();
+
+          if (config.rehashOnly()) {
+            if (handle.status().state == torrent_status::seeding) {
+              emit this->torrentRehashed(id, true);
+            } else if (handle.status().state == torrent_status::downloading) {
+              emit this->torrentRehashed(id, false);
+            } else {
+              handle.resume();
+            }
+          } else {
+            if (handle.status().state == torrent_status::seeding)
+              emit this->torrentDownloadFinished(id);
+            else 
+              handle.resume();
+          }
+
         }
       }
     }
@@ -133,18 +212,24 @@ namespace GGS {
     void WrapperInternal::stop(const QString& id)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
 
       TorrentState *state = this->getStateById(id);
       if (!state)
         return;
 
-      if (state->handle().is_valid())
+      if (state->handle().is_valid()) {
+        state->setIsStopping(true);
         state->handle().pause();
+      }
     }
 
     void WrapperInternal::remove(const QString& id)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
 
       TorrentState *state = this->getStateById(id);
       if (!state)
@@ -213,7 +298,6 @@ namespace GGS {
               , cache_flushed_alert>::handle_alert(alertObject, this->_storageNotificationHandler);
           }
 
-
         } catch(libtorrent::unhandled_alert &e) {
           QString str = QString::fromLocal8Bit(alertObject->message().c_str());
           qCritical() << "unhandled_alert category: " << alertObject->category() << typeid(*alertObject).name() << " msg: " << str;
@@ -226,6 +310,9 @@ namespace GGS {
     void WrapperInternal::progressTimerTick()
     {
       if (!this->_torrentsMapLock.tryLock())
+        return;
+
+      if (!this->_initialized)
         return;
 
       QMap<QString, TorrentState*>::const_iterator it = this->_idToTorrentState.constBegin();
@@ -247,7 +334,7 @@ namespace GGS {
 
         if (status.state == torrent_status::downloading 
           || status.state == torrent_status::checking_files) {
-          this->emitTorrentProgress(state->id(), handle);
+            this->emitTorrentProgress(state->id(), handle);
         }
 
         if (status.state == torrent_status::downloading) {
@@ -265,11 +352,13 @@ namespace GGS {
 
     void WrapperInternal::loadAndStartTorrent(const QString& id, const TorrentConfig &config, bool backgroudSeeding)
     {
-      ResumeInfo resumeInfo;
-      resumeInfo.setId(id);
-      resumeInfo.setSavePath(config.downloadPath());
-      resumeInfo.setTorrentPath(config.pathToTorrentFile());
-      this->_resumeInfo[id] = resumeInfo;
+      if (config.isSeedEnable()) {
+        ResumeInfo resumeInfo;
+        resumeInfo.setId(id);
+        resumeInfo.setSavePath(config.downloadPath());
+        resumeInfo.setTorrentPath(config.pathToTorrentFile());
+        this->_resumeInfo[id] = resumeInfo;
+      }
 
       if (backgroudSeeding) 
         DEBUG_LOG << "background " << id;
@@ -302,13 +391,13 @@ namespace GGS {
           p.resume_data = &buf;
         else
           DEBUG_LOG << "can't load fast resume for" << id << "error" << ec.value();
-        
+
       } else {
         DEBUG_LOG << "force rehash for" << id;
       }
-      
+
       torrent_handle h = this->_session->add_torrent(p, ec);
-      
+
       if (ec) {
         QString str = QString::fromLocal8Bit(ec.message().c_str());
         CRITICAL_LOG << "start error" << str << "in" << id;
@@ -320,6 +409,19 @@ namespace GGS {
       state->setId(id);
       state->setHandle(h);
       state->setBackgroundSeeding(backgroudSeeding);
+      state->setRehashOnly(config.rehashOnly());
+<<<<<<< HEAD
+<<<<<<< HEAD
+      state->setIsSeedEnable(config.isSeedEnable());
+      state->setPathToTorrent(config.pathToTorrentFile());
+<<<<<<< HEAD
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+      state->setIsSeedEnable(config.isSeedEnable());
+>>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
+=======
+>>>>>>> 78744f6... QGNA-295 Запоминаем путь для torrent файла
 
       this->_idToTorrentState[id] = state;
       QString infohash = QString::fromStdString(torrentInfo->info_hash().to_string());
@@ -354,6 +456,9 @@ namespace GGS {
     void WrapperInternal::saveFastResume(const torrent_handle &handle, boost::shared_ptr<entry> resumeData)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       this->saveFastResumeWithoutLock(handle, resumeData);
     }
 
@@ -386,6 +491,12 @@ namespace GGS {
     void WrapperInternal::shutdown()
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      this->_shuttingDown = true;
+      if (!this->_initialized)
+        return;
+
+      this->_initialized = false;
+
       this->_alertTimer.stop();
       this->_progressTimer.stop();
 
@@ -446,7 +557,7 @@ namespace GGS {
 
       delete this->_session;
       this->_session = 0;
-      
+
       this->cleanIdToTorrentStateMap();
     }
 
@@ -459,33 +570,121 @@ namespace GGS {
 
     void WrapperInternal::torrentPausedAlert(const torrent_handle &handle)
     {
-      QMutexLocker lock(&this->_torrentsMapLock);      
+      QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       TorrentState *state = getStateByTorrentHandle(handle);
 
       DEBUG_LOG << "torrentPausedAlert"
         << (state ? state->id() : "")
         << (state ? state->backgroundSeeding() : "");
 
-      if (!state || state->backgroundSeeding() || !handle.is_valid())
+      if (!state || state->backgroundSeeding() || !handle.is_valid() || !state->isSeedEnable())
         return;
 
       handle.save_resume_data();
-      this->emitTorrentProgress(state->id(), handle);
-      emit this->torrentPaused(state->id());
+      if (state->isStopping()) {
+        state->setIsStopping(false);
+        this->emitTorrentProgress(state->id(), handle);
+        emit this->torrentPaused(state->id());
+      }
+    }
+
+    void WrapperInternal::calcDirectSpeed(GGS::Libtorrent::EventArgs::ProgressEventArgs& args, const libtorrent::torrent_handle &handle)
+    {
+      std::vector<libtorrent::peer_info> peerInfo;
+
+      handle.get_peer_info(peerInfo);
+
+      int peerInfoSize = peerInfo.size();
+
+      int directDownloadSpeed = 0;
+      int peerDownloadSpeed = 0;
+
+      qint64 directDownloaded = 0;
+      qint64 peerDownloaded = 0;
+
+      for (std::vector<libtorrent::peer_info>::iterator i = peerInfo.begin(); i != peerInfo.end(); ++i) {
+        if ((*i).connection_type == libtorrent::peer_info::web_seed) {
+<<<<<<< HEAD
+          directDownRate += (*i).down_speed;
+          directDownload += (*i).total_download;
+<<<<<<< HEAD
+<<<<<<< HEAD
+        } 
+          
+=======
+        }
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+        } 
+          
+>>>>>>> d29ae78... QGNA-407 При каком-то из обновлений произошел регресс в система скачивания игр
+=======
+          directDownloadSpeed += (*i).down_speed;
+          directDownloaded += (*i).total_download;
+        } 
+        if ((*i).connection_type != libtorrent::peer_info::web_seed) {
+          peerDownloadSpeed += (*i).down_speed;
+          peerDownloaded += (*i).total_download;
+        } 
+      }
+
+      if (peerInfoSize > 0) {
+        this->_lastDirectDownloaded = directDownloaded;
+        this->_lastPeerDownloaded = peerDownloaded;
+>>>>>>> 017b74e... QGNA-471 Fixed bug with direct/peer download rates, spelling fix: playloadUploadRate -> payloadUploadRate
+      }
+
+      args.setDirectPayloadDownloadRate(directDownloadSpeed);
+      args.setDirectTotalDownload(directDownloaded);
+
+      args.setPeerPayloadDownloadRate(peerDownloadSpeed);
+      args.setPeerTotalDownload(peerDownloaded);
     }
 
     void WrapperInternal::emitTorrentProgress(const QString& id, const torrent_handle &handle)
     {
       torrent_status status = handle.status(0);
+      this->emitTorrentProgress(id, handle, status, status.state);
+    }
 
+    void WrapperInternal::emitTorrentProgress(
+      const QString& id, 
+      const torrent_handle& handle, 
+      torrent_status &status, 
+      torrent_status::state_t torrentState)
+    {
       GGS::Libtorrent::EventArgs::ProgressEventArgs args;
       args.setId(id);
       args.setProgress(status.progress);
-      args.setStatus(this->convertStatus(status.state));
-      args.setDownloadRate(status.download_rate);
-      args.setUploadRate(status.upload_rate);
+      args.setStatus(this->convertStatus(torrentState));
+
       args.setTotalWanted(status.total_wanted);
       args.setTotalWantedDone(status.total_wanted_done);
+
+      args.setDownloadRate(status.download_rate);
+      args.setUploadRate(status.upload_rate);
+
+      //  down\up payload rate
+      args.setPayloadDownloadRate(status.download_payload_rate);
+      args.setPayloadUploadRate(status.upload_payload_rate);
+
+      this->calcDirectSpeed(args, handle);
+
+      //  down\up payload total
+      args.setPayloadTotalDownload(this->_lastDirectDownloaded + this->_lastPeerDownloaded);     
+      args.setTotalPayloadUpload(status.total_payload_upload);
+
+      //  в случае паузы вычислить скачанное по пирам невозможно, поэтому показываем последние значения
+      if (status.paused) {
+        args.setDirectPayloadDownloadRate(0);
+        args.setPeerPayloadDownloadRate(0);
+        args.setDirectTotalDownload(this->_lastDirectDownloaded);
+        args.setPeerTotalDownload(this->_lastPeerDownloaded);
+        args.setPayloadUploadRate(0);
+      }
 
       emit this->progressChanged(args);
     }
@@ -493,6 +692,9 @@ namespace GGS {
     void WrapperInternal::trackerErrorAlert(const torrent_handle &handle, int failCountInARow, int httpStatusCode)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       TorrentState *state = this->getStateByTorrentHandle(handle);
       if (state && !state->backgroundSeeding())
         emit this->trackerFailed(state->id(), failCountInARow, httpStatusCode);
@@ -501,6 +703,9 @@ namespace GGS {
     void WrapperInternal::fileErrorAlert(const torrent_handle &handle, const QString& filePath, int errorCode)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       TorrentState *state = this->getStateByTorrentHandle(handle);
       if (state && !state->backgroundSeeding())
         emit this->fileError(state->id(), filePath, errorCode);
@@ -510,18 +715,21 @@ namespace GGS {
     {
       emit this->listenFailed(port, errorCode);
     }
-    
+
     void WrapperInternal::torrentStatusChangedAlert(const torrent_handle &handle, torrent_status::state_t oldState , torrent_status::state_t newState)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       TorrentState *state = this->getStateByTorrentHandle(handle);
       if (!state || !handle.is_valid())
         return;
 
-       DEBUG_LOG << "torrentStatusChangedAlert " << state->id() 
-         << " old " << oldState 
-         << " new " << newState
-         << " background " << state->backgroundSeeding();
+      DEBUG_LOG << "torrentStatusChangedAlert " << state->id() 
+        << " old " << oldState 
+        << " new " << newState
+        << " background " << state->backgroundSeeding();
 
       if (state->backgroundSeeding()) {
         if (newState == torrent_status::downloading) {
@@ -532,9 +740,44 @@ namespace GGS {
 
         return;
       }
-      
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+      if (state->rehashOnly()) {
+        if (newState == torrent_status::downloading) {
+          torrent_status status = handle.status(0);
+          if (!status.is_finished) {
+            state->handle().pause();
+            emit this->torrentRehashed(state->id(), false);
+          }
+
+          return;
+        } else if (newState == torrent_status::seeding) {
+          emit this->torrentRehashed(state->id(), true);
+          return;
+        }
+      }
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+      if (!state->isSeedEnable() && newState == torrent_status::seeding)
+        state->handle().pause();
+
+=======
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+      if (!state->isSeedEnable() && newState == torrent_status::seeding)
+        state->handle().pause();
+
+>>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
       emit this->torrentStatusChanged(state->id(), this->convertStatus(oldState), this->convertStatus(newState));
-      this->emitTorrentProgress(state->id(), handle);
+      
+      torrent_status status = handle.status(0);
+      this->emitTorrentProgress(state->id(), handle, status, oldState);
     }
 
     void WrapperInternal::torrentFinishedAlert(const torrent_handle &handle)
@@ -545,6 +788,9 @@ namespace GGS {
       handle.save_resume_data();
 
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       TorrentState *state = this->getStateByTorrentHandle(handle);
 
       if (!state)
@@ -554,19 +800,36 @@ namespace GGS {
         << " background " << state->backgroundSeeding();
 
       // Торрент скачан и готов к фоновому сидированию
-      this->_resumeInfo[state->id()].setFinished(true);
-      this->saveSessionState();
+      if (state->isSeedEnable()) {
+        this->_resumeInfo[state->id()].setFinished(true);
+        this->saveSessionState();
+      }
+<<<<<<< HEAD
+
+      if (!this->_seedEnabled)
+        handle.pause();
+=======
+>>>>>>> 97fc3e4... QGNA-295 is seed enable
+
+      if (!this->_seedEnabled)
+        handle.pause();
 
       if (state->backgroundSeeding())
         return;
 
       emit this->torrentDownloadFinished(state->id());
       this->emitTorrentProgress(state->id(), handle);
+      
+      torrent_status status = handle.status(0);
+      this->emitTorrentProgress(state->id(), handle, status, torrent_status::downloading);
     }
 
     void WrapperInternal::torrentResumedAlert(const torrent_handle &handle)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       TorrentState *state = this->getStateByTorrentHandle(handle);
       if (state && !state->backgroundSeeding())
         emit this->torrentResumed(state->id());
@@ -760,6 +1023,9 @@ namespace GGS {
         return;
 
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
+
       TorrentState *state = this->getStateByTorrentHandle(handle);
       if (state && !state->backgroundSeeding())
         emit this->torrentError(state->id());
@@ -801,6 +1067,8 @@ namespace GGS {
     void WrapperInternal::backgroundSeedStart()
     {
       QMutexLocker lock(&this->_torrentsMapLock);
+      if (!this->_initialized)
+        return;
 
       Q_FOREACH(ResumeInfo info, this->_resumeInfo) {
         if (!info.finished())
@@ -817,5 +1085,92 @@ namespace GGS {
         this->loadAndStartTorrent(info.id(), config, true);
       }
     }
+
+    bool WrapperInternal::seedEnabled() const
+    {
+      return this->_seedEnabled;
+    }
+
+    void WrapperInternal::setSeedEnabled(bool value)
+    {
+      this->_seedEnabled = value;
+    }
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+    bool WrapperInternal::getInfoHash(const QString& path, QString& result)
+    {
+      std::vector<char> in;
+      error_code ec;
+      
+      QFileInfo fileInfo(path);
+      if (!fileInfo.exists())
+        return false;
+
+      if (load_file(path.toUtf8().data(), in, ec) != 0)
+        return false;
+
+      lazy_entry e;
+      if (lazy_bdecode(&in[0], &in[0] + in.size(), e, ec) != 0) 
+        return false;
+
+      lazy_entry const* info = e.dict_find_dict("info");    
+      libtorrent::hasher h;
+      std::pair<char const*, int> section = info->data_section();
+      h.update(section.first, section.second);
+      
+      sha1_hash infoHash = h.final();
+      
+      std::string str = to_hex(infoHash.to_string());
+      result = QString::fromStdString(str);
+      return true;
+    }
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
+    bool WrapperInternal::getFileList(const QString& path, QList<QString> &result)
+    {
+      error_code ec;
+      const wchar_t *wpath = reinterpret_cast<const wchar_t*>(path.utf16());
+      torrent_info *torrentInfo = new torrent_info(wpath, ec);
+      if (ec) {
+        QString str = QString::fromLocal8Bit(ec.message().c_str());
+        WARNING_LOG << "Can't create torrent info from file" << path << "with reasons" << str;
+        return false;
+      }
+
+      QString torrentName = QString::fromStdString(torrentInfo->name());
+
+      int count = torrentInfo->num_files();
+      for (int i = 0; i < count; ++i) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+        std::string name = torrentInfo->file_at(i).path;
+        QString fileName = QString::fromUtf8(name.c_str(), name.size());
+=======
+        QString fileName = QString::fromStdString(torrentInfo->file_at(i).path);
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
+=======
+        std::string name = torrentInfo->file_at(i).path;
+        QString fileName = QString::fromUtf8(name.c_str(), name.size());
+>>>>>>> 88601ea... QGNA-295 Починил функцию получения спсика файлов  - конвертация utf8->ucs2
+        fileName = fileName.right(fileName.length() - torrentName.length() - 1);
+        result.append(fileName);
+      }
+
+      return true;
+    }
+
+<<<<<<< HEAD
+=======
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
   }
 }

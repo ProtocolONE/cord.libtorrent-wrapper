@@ -32,7 +32,7 @@
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
 #include <libtorrent/extensions/smart_ban.hpp>
-
+#include <libtorrent/peer_info.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
@@ -106,8 +106,25 @@ namespace GGS {
       void pauseSession();
       void resumeSession();
 
+      bool seedEnabled() const;
+      void setSeedEnabled(bool value);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+      bool getInfoHash(const QString& path, QString& result);
+
+      bool getFileList(const QString& path, QList<QString> &result);
+
+<<<<<<< HEAD
+=======
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+      bool getInfoHash(const QString& path, QString& result);
+
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
     signals:
-      
       void listeningPortChanged(unsigned short port);
       void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
 
@@ -125,6 +142,7 @@ namespace GGS {
       void startTorrentFailed(QString id, int errorCode);
 
       void listenFailed(int port, int errorCode);
+      void torrentRehashed(QString id, bool isComplete);
 
     private slots:
       void alertTimerTick();
@@ -139,7 +157,14 @@ namespace GGS {
       inline TorrentState* getStateByTorrentHandle(const libtorrent::torrent_handle &handle);
       inline TorrentState* getStateById(const QString& id);
 
+      void calcDirectSpeed(GGS::Libtorrent::EventArgs::ProgressEventArgs& args, const libtorrent::torrent_handle &handle);
       void emitTorrentProgress(const QString& id, const libtorrent::torrent_handle &handle);
+      void emitTorrentProgress(
+        const QString& id, 
+        const libtorrent::torrent_handle& handle, 
+        libtorrent::torrent_status &status, 
+        libtorrent::torrent_status::state_t torrentState);
+
       void saveFastResumeWithoutLock(const libtorrent::torrent_handle &handle, boost::shared_ptr<libtorrent::entry> resumeData);
       void saveSessionState();
       void cleanIdToTorrentStateMap();
@@ -168,6 +193,26 @@ namespace GGS {
       QMap<QString, TorrentState*> _infohashToTorrentState;
 
       QMap<QString, ResumeInfo> _resumeInfo;
+<<<<<<< HEAD
+<<<<<<< HEAD
+      bool _seedEnabled;
+      bool _shuttingDown;
+      bool _initialized;
+=======
+
+      bool _seedEnabled;
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+      bool _seedEnabled;
+      bool _shuttingDown;
+      bool _initialized;
+<<<<<<< HEAD
+>>>>>>> 52c0942... QGNA-295 Добавил проверки - создан ли врапепр.
+=======
+	  
+      qint64 _lastDirectDownloaded;
+      qint64 _lastPeerDownloaded;
+>>>>>>> 017b74e... QGNA-471 Fixed bug with direct/peer download rates, spelling fix: playloadUploadRate -> payloadUploadRate
     };
   }
 }

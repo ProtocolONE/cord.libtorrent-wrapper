@@ -16,6 +16,7 @@
 #include <LibtorrentWrapper/EventArgs/ProgressEventArgs>
 
 #include <QtCore/QObject>
+#include <QtCore/QList>
 
 namespace GGS {
   namespace Libtorrent
@@ -131,6 +132,65 @@ namespace GGS {
       */
       void setMaxConnection(int maxConnection);
 
+
+      /*!
+        \fn bool Wrapper::seedEnabled() const;
+        \brief Возвращает включена ли раздача.
+        \author Ilya.Tkachenko
+        \date 12.07.2013
+        \return true if it succeeds, false if it fails.
+      */
+      bool seedEnabled() const;
+
+
+      /*!
+        \fn void Wrapper::setSeedEnabled(bool value);
+        \brief Sets a seed enabled.
+        \author Ilya.Tkachenko
+        \date 12.07.2013
+        \param value true to value.
+      */
+      void setSeedEnabled(bool value);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+
+      /*!
+        \fn bool Wrapper::getInfoHash(const QString& path, QString& result);
+        \brief Gets an information hash.
+        \author Ilya.Tkachenko
+        \date 27.07.2013
+        \param path            Полный путь до папки с настрйоками.
+        \param [in,out] result The result.
+        \return true if it succeeds, false if it fails.
+      */
+      bool getInfoHash(const QString& path, QString& result);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
+
+      /*!
+        \fn bool Wrapper::getFileList(const QString& path, QList<QString> &result);
+        \brief Gets a relative path file list.
+        \author Ilya.Tkachenko
+        \date 29.07.2013
+        \param path            Полный путь до папки с настрйоками.
+        \param [in,out] result The result.
+        \return true if it succeeds, false if it fails.
+      */
+      bool getFileList(const QString& path, QList<QString> &result);
+
+<<<<<<< HEAD
+=======
+>>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+>>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
     public slots:
       /*!
         \fn void Wrapper::pauseSession();
@@ -213,7 +273,6 @@ namespace GGS {
       /// <param name="id">Id торрента.</param>
       void torrentDownloadFinished(QString id);
 
-
       /// <summary>Torrent resumed.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       /// <param name="id">Id торрента.</param>
@@ -222,6 +281,8 @@ namespace GGS {
       void startTorrentFailed(QString id, int errorCode);
 
       void torrentPaused(QString id);
+
+      void torrentRehashed(QString id, bool isComplete);
 
     private:
       WrapperInternal *_internalWrapper;

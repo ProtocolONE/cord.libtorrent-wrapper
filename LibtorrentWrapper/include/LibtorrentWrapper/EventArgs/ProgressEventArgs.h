@@ -28,6 +28,7 @@ namespace GGS
       {
         Q_OBJECT
         Q_ENUMS(TorrentStatus)
+		
       public:
         ProgressEventArgs(QObject *parrent = 0);
         ProgressEventArgs(const ProgressEventArgs &p);
@@ -44,6 +45,7 @@ namespace GGS
           CheckingResumeData
         };
 
+	  public slots:
         void setProgress(float progress);
         float progress() const;
 
@@ -64,6 +66,30 @@ namespace GGS
 
         void setTotalWantedDone(qint64 totalWantedDone);
         qint64 totalWantedDone() const;
+		
+		void setPayloadTotalDownload(qint64 totalDownload);
+		qint64 payloadTotalDownload() const;
+
+		void setPayloadDownloadRate(int payloadDownloadRate);
+		int payloadDownloadRate() const; 
+
+		void setPeerPayloadDownloadRate(int payloadDownloadRate);
+		int peerPayloadDownloadRate() const;
+
+		void setDirectPayloadDownloadRate(int downloadRate);
+		int directPayloadDownloadRate() const;
+
+		void setPayloadUploadRate(int payloadUploadRate);
+		int payloadUploadRate() const;
+
+		void setTotalPayloadUpload(qint64 totalUpload);
+		qint64 totalPayloadUpload() const;
+
+		void setDirectTotalDownload(qint64 totalDownload);
+		qint64 directTotalDownload() const;
+
+		void setPeerTotalDownload(qint64 totalDownload); 
+		qint64 peerTotalDownload() const;
 
       private:
         QString _id;
@@ -75,6 +101,16 @@ namespace GGS
 
         qint64 _totalWanted;
         qint64 _totalWantedDone;
+
+		qint64 _directTotalDownload;
+		qint64 _peerTotalDownload;
+
+		qint64 _payloadTotalDownload;
+		int _peerPayloadDownloadRate;
+		int _payloadDownloadRate;
+		int _directPayloadDownloadRate;
+		int _playloadUploadRate;
+		qint64 _totalPayloadUpload; 
       };
 
       Q_DECLARE_METATYPE(ProgressEventArgs);

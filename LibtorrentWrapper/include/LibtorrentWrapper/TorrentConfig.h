@@ -8,8 +8,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 ****************************************************************************/
 
-#ifndef _GGS_LIBTORRENT_TORRENT_CONFIG_H_
-#define _GGS_LIBTORRENT_TORRENT_CONFIG_H_
+#pragma once
 
 #include <LibtorrentWrapper/libtorrentwrapper_global>
 
@@ -37,14 +36,36 @@ namespace GGS {
       void setIsForceRehash(bool isForceRehash);
       bool isForceRehash() const;
 
+      bool rehashOnly() const;
+      void setRehashOnly(bool value);
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+      bool isSeedEnable() const;
+      void setIsSeedEnable(bool enable);
+
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+      bool isSeedEnable() const;
+      void setIsSeedEnable(bool enable);
+
+>>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     private:
       QString _pathToTorrentFile;
       QString _downloadPath;
       bool _isReloadRequired;
       bool _forceRehash;
+      bool _rehashOnly;
+<<<<<<< HEAD
+<<<<<<< HEAD
+      bool _isSeedEnable;
+=======
+>>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
+=======
+      bool _isSeedEnable;
+>>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     };
 
   }
 }
-
-#endif // _GGS_LIBTORRENT_TORRENT_CONFIG_H_
