@@ -332,8 +332,7 @@ namespace GGS {
         DEBUG_LOG << "background " << id;
 
       error_code ec;
-      const wchar_t *path = reinterpret_cast<const wchar_t*>(config.pathToTorrentFile().utf16());
-      torrent_info *torrentInfo = new torrent_info(path, ec);
+      torrent_info *torrentInfo = new torrent_info(config.pathToTorrentFile().toUtf8().data(), ec);
 
       if (ec) {
         QString str = QString::fromLocal8Bit(ec.message().c_str());
@@ -1048,8 +1047,7 @@ namespace GGS {
     bool WrapperInternal::getFileList(const QString& path, QList<QString> &result)
     {
       error_code ec;
-      const wchar_t *wpath = reinterpret_cast<const wchar_t*>(path.utf16());
-      torrent_info *torrentInfo = new torrent_info(wpath, ec);
+      torrent_info *torrentInfo = new torrent_info(path.toUtf8().data(), ec);
       if (ec) {
         QString str = QString::fromLocal8Bit(ec.message().c_str());
         WARNING_LOG << "Can't create torrent info from file" << path << "with reasons" << str;

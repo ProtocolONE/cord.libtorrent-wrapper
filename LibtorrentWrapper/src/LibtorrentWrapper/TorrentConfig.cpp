@@ -78,7 +78,7 @@ namespace GGS {
 
     void TorrentConfig::setIsSeedEnable(bool enable)
     {
-      this->_isSeedEnable;
+      this->_isSeedEnable = enable;
     }
 
     bool TorrentConfig::isSeedEnable() const
