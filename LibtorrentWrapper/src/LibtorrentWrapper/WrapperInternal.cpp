@@ -794,23 +794,19 @@ namespace GGS {
         libtorrent::session::save_dht_state |
         libtorrent::session::save_feeds);
 
-      entry resumeEntry;
+      entry::dictionary_type& resume = sessionState["GGSResumeInfo"].dict();
       Q_FOREACH(ResumeInfo resumeInfo, this->_resumeInfo) {
         if (!resumeInfo.finished())
           continue;
-
-        entry info;
+          
         std::string id(resumeInfo.id().toUtf8());
         std::string torrentPath(resumeInfo.torrentPath().toUtf8());
         std::string savePath(resumeInfo.savePath().toUtf8());
-
-        info["torrentPath"] = torrentPath;
-        info["savePath"] = savePath;
-
-        resumeEntry[id] = info;
+        
+        entry::dictionary_type& resumeService = resume[id].dict();
+        resumeService["torrentPath"].string() = torrentPath;
+        resumeService["savePath"].string() = savePath;
       }
-
-      sessionState["GGSResumeInfo"] = resumeEntry;
 
       QString resumeFilePath = this->getSessionStatePath();
       this->createDirectoryIfNotExists(resumeFilePath);
@@ -843,6 +839,9 @@ namespace GGS {
         CRITICAL_LOG << "Can't load session state from" << sessionStatePath <<"with error code:" << ec;
         return;
       }
+
+      if (in.size() == 0)
+        return;
 
       lazy_entry e;
       if (lazy_bdecode(&in[0], &in[0] + in.size(), e, ec) != 0) 
@@ -1028,6 +1027,9 @@ namespace GGS {
         return false;
 
       if (load_file(path.toUtf8().data(), in, ec) != 0)
+        return false;
+
+      if (in.size() == 0)
         return false;
 
       lazy_entry e;
