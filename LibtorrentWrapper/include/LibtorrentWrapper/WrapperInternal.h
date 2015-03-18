@@ -139,6 +139,8 @@ namespace GGS {
       void backgroundSeedStart();
 
     private:
+      int loadFile(std::string const& filename, std::vector<char>& v, libtorrent::error_code& ec, int limit = 8000000);
+
       void createDirectoryIfNotExists(const QString &resumeFilePath );
       void loadAndStartTorrent(const QString& id, const TorrentConfig &config, bool backgroudSeeding = false);
       GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus convertStatus(const libtorrent::torrent_status::state_t status);
@@ -185,7 +187,7 @@ namespace GGS {
       bool _seedEnabled;
       bool _shuttingDown;
       bool _initialized;
-	  
+    
       qint64 _lastDirectDownloaded;
       qint64 _lastPeerDownloaded;
     };

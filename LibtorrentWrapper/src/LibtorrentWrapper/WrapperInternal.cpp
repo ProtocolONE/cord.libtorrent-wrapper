@@ -27,8 +27,8 @@ namespace GGS {
       , _seedEnabled(false)
       , _shuttingDown(false)
       , _initialized(false)
-	  , _lastDirectDownloaded(0)
-	  , _lastPeerDownloaded(0)
+      , _lastDirectDownloaded(0)
+      , _lastPeerDownloaded(0)
     {
       this->_fastResumeWaitTimeInSec = 30;
       this->_fastresumeCounterMax = 40;
@@ -60,7 +60,9 @@ namespace GGS {
       // 2. load_state()
       // 3. add_extension()
       // 4. start DHT, LSD, UPnP, NAT-PMP etc
+
       this->_sessionsSettings.user_agent = std::string("qgna/").append(LIBTORRENT_VERSION);
+      
       this->_sessionsSettings.optimize_hashing_for_speed = true;
       this->_sessionsSettings.disk_cache_algorithm = session_settings::largest_contiguous;
       this->_sessionsSettings.dont_count_slow_torrents = true;
@@ -71,18 +73,25 @@ namespace GGS {
       
       this->_sessionsSettings.prefer_udp_trackers = false;
       this->_sessionsSettings.rate_limit_utp = true;
-      this->_sessionsSettings.tick_interval = 90;
+      this->_sessionsSettings.tick_interval = 80;
       this->_sessionsSettings.share_mode_target = 2;
-      this->_sessionsSettings.choking_algorithm = session_settings::bittyrant_choker;
-      this->_sessionsSettings.torrent_connect_boost = 20; 
+      this->_sessionsSettings.choking_algorithm = session_settings::fastest_upload;
+      this->_sessionsSettings.torrent_connect_boost = 30; 
       this->_sessionsSettings.utp_num_resends = 4;
       this->_sessionsSettings.allow_multiple_connections_per_ip = true;
       this->_sessionsSettings.max_failcount = 1;
       this->_sessionsSettings.min_reconnect_time = 30;
-      this->_sessionsSettings.peer_connect_timeout = 10;
+      this->_sessionsSettings.peer_connect_timeout = 5;
       this->_sessionsSettings.inactivity_timeout = 180;
       this->_sessionsSettings.mixed_mode_algorithm = session_settings::prefer_tcp;
-      
+      this->_sessionsSettings.request_timeout = 20;
+      this->_sessionsSettings.unchoke_slots_limit = 20;
+      this->_sessionsSettings.handshake_timeout = 5;
+      this->_sessionsSettings.connections_slack = 15;
+      this->_sessionsSettings.connection_speed = 30;
+
+      this->_sessionsSettings.anonymous_mode = false;
+
       // QGNA-278 Ограничим полуоткрытые для XP
       if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
         this->_sessionsSettings.half_open_limit = 5;
@@ -215,62 +224,89 @@ namespace GGS {
       std::auto_ptr<alert> alertObject = this->_session->pop_alert();
       while (alertObject.get())
       {
-        try
-        {
-          if(alertObject->category() & alert::error_notification) {
-            handle_alert<
-              tracker_error_alert
-              , tracker_warning_alert
-              , scrape_failed_alert
-              , torrent_delete_failed_alert
-              , save_resume_data_failed_alert
-              , url_seed_alert
-              , file_error_alert
-              , metadata_failed_alert
-              , udp_error_alert
-              , listen_failed_alert
-              , portmap_error_alert
-              , fastresume_rejected_alert
-              , torrent_error_alert
-            >::handle_alert(alertObject, this->_errorNotificationHandler);
-          } else if(alertObject->category() & alert::status_notification) {
-            handle_alert<
-              state_changed_alert
-              , hash_failed_alert
-              , torrent_finished_alert
-              , torrent_paused_alert
-              , torrent_resumed_alert
-              , torrent_checked_alert
-              , metadata_received_alert
-              , external_ip_alert
-              , listen_succeeded_alert
-              , torrent_added_alert
-              , trackerid_alert
-              , torrent_removed_alert
-            >::handle_alert(alertObject, this->_statusNotificationHandler);
-          } else if(alertObject->category() & alert::tracker_notification) {
-            handle_alert<
-              tracker_announce_alert
-              , scrape_reply_alert
-              , tracker_reply_alert
-              , dht_reply_alert>::handle_alert(alertObject, this->_trackerNotificationHandler);
-          } else if(alertObject->category() & alert::storage_notification) {
-            handle_alert<
-              read_piece_alert
-              , file_renamed_alert
-              , file_rename_failed_alert
-              , storage_moved_alert
-              , storage_moved_failed_alert
-              , torrent_deleted_alert
-              , save_resume_data_alert
-              , cache_flushed_alert>::handle_alert(alertObject, this->_storageNotificationHandler);
+          if (tracker_error_alert* p = alert_cast<tracker_error_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (tracker_warning_alert* p = alert_cast<tracker_warning_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (scrape_failed_alert* p = alert_cast<scrape_failed_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (torrent_delete_failed_alert* p = alert_cast<torrent_delete_failed_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          if (save_resume_data_failed_alert* p = alert_cast<save_resume_data_failed_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (url_seed_alert* p = alert_cast<url_seed_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+
+          else if (file_error_alert* p = alert_cast<file_error_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (metadata_failed_alert* p = alert_cast<metadata_failed_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (udp_error_alert* p = alert_cast<udp_error_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (listen_failed_alert* p = alert_cast<listen_failed_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (portmap_error_alert* p = alert_cast<portmap_error_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (fastresume_rejected_alert* p = alert_cast<fastresume_rejected_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+          else if (torrent_error_alert* p = alert_cast<torrent_error_alert>(alertObject.get()))
+              this->_errorNotificationHandler(*p);
+
+          else if (state_changed_alert* p = alert_cast<state_changed_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (hash_failed_alert* p = alert_cast<hash_failed_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (torrent_finished_alert* p = alert_cast<torrent_finished_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (torrent_paused_alert* p = alert_cast<torrent_paused_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (torrent_resumed_alert* p = alert_cast<torrent_resumed_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (torrent_checked_alert* p = alert_cast<torrent_checked_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (metadata_received_alert* p = alert_cast<metadata_received_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (external_ip_alert* p = alert_cast<external_ip_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (listen_succeeded_alert* p = alert_cast<listen_succeeded_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (torrent_added_alert* p = alert_cast<torrent_added_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (trackerid_alert* p = alert_cast<trackerid_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+          else if (torrent_removed_alert* p = alert_cast<torrent_removed_alert>(alertObject.get()))
+              this->_statusNotificationHandler(*p);
+
+          else if (tracker_announce_alert* p = alert_cast<tracker_announce_alert>(alertObject.get()))
+              this->_trackerNotificationHandler(*p);
+          else if (scrape_reply_alert* p = alert_cast<scrape_reply_alert>(alertObject.get()))
+              this->_trackerNotificationHandler(*p);
+          else if (tracker_reply_alert* p = alert_cast<tracker_reply_alert>(alertObject.get()))
+              this->_trackerNotificationHandler(*p);
+          else if (dht_reply_alert* p = alert_cast<dht_reply_alert>(alertObject.get()))
+              this->_trackerNotificationHandler(*p);
+
+          else if (read_piece_alert* p = alert_cast<read_piece_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else if (file_renamed_alert* p = alert_cast<file_renamed_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else if (file_rename_failed_alert* p = alert_cast<file_rename_failed_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else if (storage_moved_alert* p = alert_cast<storage_moved_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else if (storage_moved_failed_alert* p = alert_cast<storage_moved_failed_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else if (torrent_deleted_alert* p = alert_cast<torrent_deleted_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else if (save_resume_data_alert* p = alert_cast<save_resume_data_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else if (cache_flushed_alert* p = alert_cast<cache_flushed_alert>(alertObject.get()))
+              this->_storageNotificationHandler(*p);
+          else {
+              QString str = QString::fromLocal8Bit(alertObject->message().c_str());
+              qCritical() << "unhandled_alert category: " << alertObject->category() << typeid(*alertObject).name() << " msg: " << str;
           }
-
-        } catch(libtorrent::unhandled_alert &e) {
-          QString str = QString::fromLocal8Bit(alertObject->message().c_str());
-          qCritical() << "unhandled_alert category: " << alertObject->category() << typeid(*alertObject).name() << " msg: " << str;
-        }
-
+          
         alertObject = this->_session->pop_alert();
       }
     }
@@ -318,6 +354,41 @@ namespace GGS {
       this->_torrentsMapLock.unlock();
     }
 
+    int WrapperInternal::loadFile(std::string const& filename, std::vector<char>& v, error_code& ec, int limit)
+    {
+        ec.clear();
+
+        file f;
+        if (!f.open(filename, file::read_only, ec)) 
+          return -1;
+
+        size_type s = f.get_size(ec);
+
+        if (ec) 
+          return -1;
+
+        if (s > limit) {
+            ec = error_code(errors::metadata_too_large, get_libtorrent_category());
+            return -2;
+        }
+
+        v.resize(s);
+
+        if (s == 0) 
+          return 0;
+
+        file::iovec_t b = {&v[0], s};
+        size_type read = f.readv(0, &b, 1, ec);
+
+        if (read != s) 
+          return -3;
+
+        if (ec) 
+          return -3;
+
+        return 0;
+    }
+
     void WrapperInternal::loadAndStartTorrent(const QString& id, const TorrentConfig &config, bool backgroudSeeding)
     {
       if (config.isSeedEnable()) {
@@ -356,8 +427,8 @@ namespace GGS {
       QString resumeFilePath = this->getFastResumeFilePath(id);
       std::vector<char> buf;
       if (!config.isForceRehash()) {
-        if (load_file(resumeFilePath.toUtf8().data(), buf, ec) == 0)
-          p.resume_data = &buf;
+        if (this->loadFile(resumeFilePath.toUtf8().data(), buf, ec) == 0)
+          p.resume_data = buf;
         else
           DEBUG_LOG << "can't load fast resume for" << id << "error" << ec.value();
 
@@ -835,7 +906,7 @@ namespace GGS {
         return;
       }
 
-      if (load_file(sessionStatePath.toUtf8().data(), in, ec) != 0) {
+      if (this->loadFile(sessionStatePath.toUtf8().data(), in, ec) != 0) {
         CRITICAL_LOG << "Can't load session state from" << sessionStatePath <<"with error code:" << ec;
         return;
       }
@@ -1026,7 +1097,7 @@ namespace GGS {
       if (!fileInfo.exists())
         return false;
 
-      if (load_file(path.toUtf8().data(), in, ec) != 0)
+      if (this->loadFile(path.toUtf8().data(), in, ec) != 0)
         return false;
 
       if (in.size() == 0)
