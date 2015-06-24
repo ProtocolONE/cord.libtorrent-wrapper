@@ -413,9 +413,7 @@ namespace GGS {
       }
 
       add_torrent_params p;
-      p.flags = add_torrent_params::flag_override_resume_data | 
-                add_torrent_params::flag_use_resume_save_path; // Сомнительное название вводящее в заблуждение, если этот флаг выставлен
-                                                               // то libtorrent не будет использовать путь из resume_data
+      p.flags = add_torrent_params::flag_override_resume_data;
       p.ti = torrentInfo;
 
       // Должен быть определен дефайн UNICODE
