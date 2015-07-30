@@ -60,38 +60,131 @@ namespace GGS {
       // 2. load_state()
       // 3. add_extension()
       // 4. start DHT, LSD, UPnP, NAT-PMP etc
-
+      
       this->_sessionsSettings.user_agent = std::string("qgna/").append(LIBTORRENT_VERSION);
-      
-      this->_sessionsSettings.optimize_hashing_for_speed = true;
-      this->_sessionsSettings.disk_cache_algorithm = session_settings::largest_contiguous;
-      this->_sessionsSettings.dont_count_slow_torrents = true;
-      this->_sessionsSettings.ban_web_seeds = false;
-      this->_sessionsSettings.allow_reordered_disk_operations = true;
-      this->_sessionsSettings.no_connect_privileged_ports = true;
-      this->_sessionsSettings.lock_files = false;
-      
-      this->_sessionsSettings.prefer_udp_trackers = false;
-      this->_sessionsSettings.rate_limit_utp = true;
-      this->_sessionsSettings.tick_interval = 80;
-      this->_sessionsSettings.share_mode_target = 2;
-      this->_sessionsSettings.choking_algorithm = session_settings::fastest_upload;
-      this->_sessionsSettings.torrent_connect_boost = 30; 
-      this->_sessionsSettings.utp_num_resends = 4;
-      this->_sessionsSettings.allow_multiple_connections_per_ip = true;
-      this->_sessionsSettings.max_failcount = 1;
-      this->_sessionsSettings.min_reconnect_time = 30;
-      this->_sessionsSettings.peer_connect_timeout = 5;
-      this->_sessionsSettings.inactivity_timeout = 180;
-      this->_sessionsSettings.mixed_mode_algorithm = session_settings::prefer_tcp;
-      this->_sessionsSettings.request_timeout = 20;
-      this->_sessionsSettings.unchoke_slots_limit = 20;
-      this->_sessionsSettings.handshake_timeout = 5;
-      this->_sessionsSettings.connections_slack = 15;
-      this->_sessionsSettings.connection_speed = 30;
 
+      this->_sessionsSettings.optimize_hashing_for_speed = true;
+      this->_sessionsSettings.dont_count_slow_torrents = false; //!
+      this->_sessionsSettings.ban_web_seeds = false; //!
+      this->_sessionsSettings.allow_reordered_disk_operations = true; //!
+      this->_sessionsSettings.no_connect_privileged_ports = true; //! DDOS safe, true default
+      this->_sessionsSettings.lock_files = false; //! We can`t disable it due security reasons
+
+
+      this->_sessionsSettings.prefer_udp_trackers = true; //! In out config false, using tcp is prefered
+      this->_sessionsSettings.rate_limit_utp = true; //! Should be true, we limit speed in config of app
+
+      this->_sessionsSettings.tick_interval = 80; //! Default is 100ms
+
+      //! Default 3 and 2 is upload 2 times great then download. Can`t be less then 2.
+      this->_sessionsSettings.share_mode_target = 2; 
+
+      //! But may be bittyrant_choker would be better
+      this->_sessionsSettings.choking_algorithm = session_settings::fixed_slots_choker; 
+
+      this->_sessionsSettings.torrent_connect_boost = 30;  //! Bet  ter warm up downloading, DO NOT DISABLE!!!
+      this->_sessionsSettings.utp_num_resends = 4; //! Need to disable ddos user lan
+
+      this->_sessionsSettings.allow_multiple_connections_per_ip = true;
+
+      //don't retry peers if they fail once. Let them connect to us if they want to
+      this->_sessionsSettings.max_failcount = 1; 
+      
+      // don't let connections linger for too long
+      this->_sessionsSettings.min_reconnect_time = 30; //! Default 60
+      this->_sessionsSettings.peer_connect_timeout = 5; //! Default 10
+      this->_sessionsSettings.peer_timeout = 20; //!
+      this->_sessionsSettings.inactivity_timeout = 20;  //Was 180
+      this->_sessionsSettings.request_timeout = 10; //! Was 20
+      this->_sessionsSettings.mixed_mode_algorithm = session_settings::prefer_tcp;
+     
+      this->_sessionsSettings.use_disk_cache_pool = true; //! the disk cache performs better with the pool allocator
+      
+      //! True by default and allow the buffer size to grow for the uTP socket
+      this->_sessionsSettings.utp_dynamic_sock_buf = true; 
       this->_sessionsSettings.anonymous_mode = false;
 
+      this->_sessionsSettings.unchoke_slots_limit = 500; //! Was 20, unchoke many peers
+      this->_sessionsSettings.connection_speed = 50; //Was 30
+
+      this->_sessionsSettings.handshake_timeout = 3; //! App specific, much of peer is offline
+      this->_sessionsSettings.connections_slack = 50; //! Was 15
+
+      // allow peers to request a lot of blocks at a time,
+      // to be more likely to saturate the bandwidth-delay-
+      // product.
+      this->_sessionsSettings.max_allowed_in_request_queue = 2000;
+      this->_sessionsSettings.max_out_request_queue = 1000;
+
+      this->_sessionsSettings.file_pool_size = 500; //!By default
+      this->_sessionsSettings.alert_queue_size = 5000; //! They prefer 50 000, was 1 000
+            
+      this->_sessionsSettings.connections_limit = 400; //! Was 200, they prefer 8 000 (!!!)
+      this->_sessionsSettings.listen_queue_size = 200; //! // allow lots of peers to try to connect simultaneously
+
+      //! Was 4000, but we need more DHT capacity to ping more peers candidates before trying to connect
+      this->_sessionsSettings.dht_upload_rate_limit = 20000; 
+
+      // we're more interested in downloading than seeding only service a read job every 1000 write job (when
+      // disk is congested). Presumably on a big box, writes are extremely cheap and reads are relatively expensive
+      // so that's the main reason this ratio should be adjusted
+      this->_sessionsSettings.read_job_every = 100; //! ONE OF MOST IMPORTANT!!!
+      this->_sessionsSettings.use_read_cache = true;
+      this->_sessionsSettings.cache_buffer_chunk_size = 128;
+      this->_sessionsSettings.read_cache_line_size = 32;
+      this->_sessionsSettings.write_cache_line_size = 32;
+
+      this->_sessionsSettings.cache_size = 1024 * 4; //! We use 64mb, they 1gb, default is 16mb
+      this->_sessionsSettings.low_prio_disk = true; //! True in they config, NEVER SET FALSE!!!
+      this->_sessionsSettings.cache_expiry = 60 * 60;
+
+      // this is expensive and could add significant delays when freeing a large number of buffers
+      this->_sessionsSettings.lock_disk_cache = false;
+
+      //! the max number of bytes pending write before we throttle download rate, default is 1024 * 1024
+      this->_sessionsSettings.max_queued_disk_bytes = 10 * 1024 * 1024; 
+
+      //! It`s default. Flush write cache in a way to minimize the amount we need to read back once we want to hash-check the piece.
+      // i.e. try to flush all blocks in-order
+      this->_sessionsSettings.disk_cache_algorithm = session_settings::avoid_readback;
+      this->_sessionsSettings.explicit_read_cache = 0;
+
+      //! Was 10, now 0. Prevent fast pieces to interfere with suggested pieces since we unchoke everyone,
+      // we don't need fast pieces anyway
+      this->_sessionsSettings.allowed_fast_set_size = 0;
+      
+      //! suggest pieces in the read cache for higher cache hit rate
+      this->_sessionsSettings.suggest_mode = session_settings::suggest_read_cache;
+
+      this->_sessionsSettings.close_redundant_connections = true; //True by default
+      this->_sessionsSettings.max_rejects = 10; //By default
+
+      //! Next 2 default is 16 * 1024, specifies the buffer sizes set on peer sockets
+      this->_sessionsSettings.recv_socket_buffer_size = 1024 * 1024;
+      this->_sessionsSettings.send_socket_buffer_size = 1024 * 1024;
+
+      //! We do not use auto managed torrents so it`s just copy paste from thet prefer config.
+      this->_sessionsSettings.active_limit = 2000;
+      this->_sessionsSettings.active_tracker_limit = 2000;
+      this->_sessionsSettings.active_dht_limit = 600;
+      this->_sessionsSettings.active_seeds = 2000;
+
+      //! in order to be able to deliver very high upload rates, this should be able to cover the bandwidth delay
+      // product. Assuming an RTT of 500 ms, and a send rate of 20 MB/s, the upper limit should be 10 MB. 
+      // DEFAULT WAS 10 kb !!!
+      this->_sessionsSettings.send_buffer_watermark = 3 * 1024 * 1024;
+
+      //! put 1.5 seconds worth of data in the send buffer this gives the disk I/O more heads-up on disk reads, and 
+      // can maximize throughput.
+      // DEFAULT IS 50 !!!
+      this->_sessionsSettings.send_buffer_watermark_factor = 150;
+      
+      //! always stuff at least 1 MiB down each peer pipe, to quickly ramp up send rates
+      this->_sessionsSettings.send_buffer_low_watermark = 1 * 1024 * 1024;
+      
+      //! max 'bottled' http receive buffer/url torrent size, was 4 mb
+      this->_sessionsSettings.max_http_recv_buffer_size = 6 * 1024 * 1024;
+      
       // QGNA-278 Ограничим полуоткрытые для XP
       if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
         this->_sessionsSettings.half_open_limit = 5;
@@ -100,7 +193,7 @@ namespace GGS {
         , session::start_default_features | session::add_default_plugins
         , alert::error_notification
         + alert::status_notification
-        + alert::tracker_notification
+        + alert::tracker_notification 
         + alert::storage_notification
         );
 
@@ -109,18 +202,18 @@ namespace GGS {
       this->_session->start_upnp();
       this->_session->start_natpmp();
       
+      this->_session->start_dht();
       this->_session->add_dht_router(std::make_pair(std::string("router.bittorrent.com"), 6881));
       this->_session->add_dht_router(std::make_pair(std::string("router.utorrent.com"), 6881));
       this->_session->add_dht_router(std::make_pair(std::string("router.bitcomet.com"), 6881));
-
+      
       error_code ec;
       this->_session->listen_on(std::make_pair(this->_startupListeningPort, this->_startupListeningPort), ec);
       if (ec) {
         DEBUG_LOG << "can't listen on " << this->_startupListeningPort << " error code " << ec;
         emit this->listenFailed(this->_startupListeningPort, ec.value());
       }
-
-      this->_session->start_dht();
+           
 
       this->loadSessionState();
       this->_session->set_settings(this->_sessionsSettings);

@@ -69,6 +69,8 @@ namespace GGS {
       /// <param name="path">Полный путь до папки с настрйоками.</param>
       void setTorrentConfigDirectoryPath(const QString& path);
 
+      QString getFastResumeFilePath(const QString& id);
+
       /// <summary>Задает порт, с которым стартует движек торрента. Вызывать его необходимо только до initEngine 
       /// 				 Вызов этого метода не меняет порт уже запущеного 
       /// 				 движка. Для смены порта следует использовать метод changeListeningPort.</summary>

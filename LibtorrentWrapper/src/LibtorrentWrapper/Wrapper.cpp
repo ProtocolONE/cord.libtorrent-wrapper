@@ -107,6 +107,11 @@ namespace GGS {
       this->_internalWrapper->setTorrentConfigDirectoryPath(path);
     }
 
+    QString Wrapper::getFastResumeFilePath(const QString& id)
+    {
+      return this->_internalWrapper->getFastResumeFilePath(id);
+    }
+
     int Wrapper::maxConnection()
     {
       return this->_internalWrapper->maxConnection();

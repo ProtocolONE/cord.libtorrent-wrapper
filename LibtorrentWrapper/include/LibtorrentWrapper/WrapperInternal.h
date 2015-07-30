@@ -86,6 +86,8 @@ namespace GGS {
 
       void saveFastResume(const libtorrent::torrent_handle &handle, boost::shared_ptr<libtorrent::entry> resumeData);
 
+      QString getFastResumeFilePath(const QString& id);
+
       void torrentPausedAlert(const libtorrent::torrent_handle &handle);
       void trackerErrorAlert(const libtorrent::torrent_handle &handle, int failCountInARow, int httpStatusCode);
       void fileErrorAlert(const libtorrent::torrent_handle &handle, const QString& filePath, int errorCode);
@@ -144,7 +146,6 @@ namespace GGS {
       void createDirectoryIfNotExists(const QString &resumeFilePath );
       void loadAndStartTorrent(const QString& id, const TorrentConfig &config, bool backgroudSeeding = false);
       GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus convertStatus(const libtorrent::torrent_status::state_t status);
-      QString getFastResumeFilePath(const QString& id);
       inline TorrentState* getStateByTorrentHandle(const libtorrent::torrent_handle &handle);
       inline TorrentState* getStateById(const QString& id);
 
