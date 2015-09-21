@@ -26,16 +26,17 @@ Program::Program()
   qDebug() << "wrapper connect status changed " << connect(&this->_wrapper, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
   qDebug() << "wrapper connect torrentDownloadFinished " << connect(&this->_wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
   qDebug() << "wrapper connect listeningPortChanged " << connect(&this->_wrapper, SIGNAL(listeningPortChanged(unsigned short)), this, SLOT(torrentListeningPortChanged(unsigned short)));
-  
-  qDebug() << "wrapper connect torrentPaused " << connect(&this->_wrapper, SIGNAL(torrentPaused(QString)), this, SLOT(torrentPaused(QString)));
-
-
+    qDebug() << "wrapper connect torrentPaused " << connect(&this->_wrapper, SIGNAL(torrentPaused(QString)), this, SLOT(torrentPaused(QString)));
+            
   this->setPort("11999");
-  QString torrentConfigPath = root;
-  torrentConfigPath.append("/torrents");
-  this->_wrapper.setTorrentConfigDirectoryPath(torrentConfigPath);
+
+  this->_wrapper.setTorrentConfigDirectoryPath(root.append("/torrents"));
   this->_wrapper.setListeningPort(11999);
   this->_wrapper.initEngine();
+
+  this->start();
+
+
 }
 
 Program::~Program()
@@ -48,7 +49,7 @@ void Program::start()
   this->_wrapper.initEngine();
   QString root = QCoreApplication::applicationDirPath();
   QString torrentPath = root;
-  torrentPath.append("/300003010000000000.torrent");
+  torrentPath.append("/300003010000000000-bs-live-last.torrent");
   QString downloadPath = root;
   
   //downloadPath.append(QString::fromLocal8Bit("/игра_game"));
@@ -58,6 +59,7 @@ void Program::start()
   this->_config.setPathToTorrentFile(torrentPath);
   QString id("300003010000000000");
   
+  this->_wrapper.createFastResume(id, this->_config);
   this->_wrapper.start(id, this->_config);
   //QTimer::singleShot(10000, this, SLOT(reloadSameTorrent()));
 
@@ -69,7 +71,7 @@ void Program::reloadSameTorrent()
   qDebug() << "reloadSameTorrent";
   QString root = QCoreApplication::applicationDirPath();
   QString torrentPath = root;
-  torrentPath.append("/300003010000000000.torrent");
+  torrentPath.append("/300003010000000000-bs-live-last.torrent");
   QString downloadPath = root;
 
   //downloadPath.append(QString::fromLocal8Bit("/игра_game"));
@@ -97,7 +99,7 @@ void Program::torrentProgress( GGS::Libtorrent::EventArgs::ProgressEventArgs arg
 
   if(args.id() == "300003010000000000") {
     this->setProgress2(args.progress() * 100);
-    this->setStatusText2(str);
+    this->setStatusText2(str);  
   }
 }
 

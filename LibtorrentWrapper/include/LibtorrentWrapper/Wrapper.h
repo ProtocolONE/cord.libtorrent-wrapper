@@ -1,15 +1,14 @@
 /****************************************************************************
 ** This file is a part of Syncopate Limited GameNet Application or it parts.
 **
-** Copyright (©) 2011 - 2012, Syncopate Limited and/or affiliates.
+** Copyright (c) 2011 - 2015, Syncopate Limited and/or affiliates.
 ** All rights reserved.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 ****************************************************************************/
 
-#ifndef _GGS_LIBTORRENT_WRAPPER_H_
-#define _GGS_LIBTORRENT_WRAPPER_H_
+#pragma once 
 
 #include <LibtorrentWrapper/libtorrentwrapper_global>
 #include <LibtorrentWrapper/TorrentConfig>
@@ -43,27 +42,28 @@ namespace GGS {
       /// <param name="id">    Id торрента.</param>
       /// <param name="config">Настройки добавляемого торрента.</param>
       void start(const QString& id, TorrentConfig& config);
-
+      
+      /// <summary>Сгенерировать полностью заполненный fast resume файл на основе торрет файла.</summary>
+      /// <param name="id">Id торрента.</param>
+      /// <param name="config">Настройки добавляемого торрента.</param>
+      void createFastResume(const QString& id, TorrentConfig& config);
 
       /// <summary>Останавливает торрент. Торрент переходит в режим paused.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       /// <param name="id">Id торрента.</param>
       void stop(const QString& id);
-
-
+      
       /// <summary>Закрывает сессию и все зарегистрированные торренты. Происходит сохранение всех фастрезьюмов. 
       /// 				 Функция может работать до 30 секунд.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       void shutdown();
-
-
+      
       /// <summary>Удаляет торрент из списка. Сохранение fast resume не происходит, поэтому, если удалять запущеный 
       /// 				 торрент, то fast resume может быть испорчен или не актуален.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       /// <param name="id">Id торрента.</param>
       void remove(const QString& id);
-
-
+      
       /// <summary>Устанавливает путь до папки, в которую созхраняются файлы fastresume и настройки сессии.</summary>
       /// <remarks>Ilya.Tkachenko, 10.04.2012.</remarks>
       /// <param name="path">Полный путь до папки с настрйоками.</param>
@@ -278,4 +278,3 @@ namespace GGS {
 
   }
 }
-#endif // _GGS_LIBTORRENT_WRAPPER_H_

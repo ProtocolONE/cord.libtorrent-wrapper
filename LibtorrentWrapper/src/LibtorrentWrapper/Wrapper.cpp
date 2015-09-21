@@ -1,7 +1,7 @@
 /****************************************************************************
 ** This file is a part of Syncopate Limited GameNet Application or it parts.
 **
-** Copyright (©) 2011 - 2012, Syncopate Limited and/or affiliates.
+** Copyright (c) 2011 - 2015, Syncopate Limited and/or affiliates.
 ** All rights reserved.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -50,6 +50,11 @@ namespace GGS {
     void Wrapper::start(const QString& id, TorrentConfig& config)
     {
       this->_internalWrapper->start(id, config);
+    }
+
+    void Wrapper::createFastResume(const QString& id, TorrentConfig& config)
+    {
+      this->_internalWrapper->createFastResume(id, config);
     }
 
     void Wrapper::stop(const QString& id)

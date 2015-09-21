@@ -1,15 +1,14 @@
 /****************************************************************************
 ** This file is a part of Syncopate Limited GameNet Application or it parts.
 **
-** Copyright (�) 2011 - 2012, Syncopate Limited and/or affiliates.
+** Copyright (c) 2011 - 2015, Syncopate Limited and/or affiliates.
 ** All rights reserved.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 ****************************************************************************/
 
-#ifndef _GGS_LIBTORRENT_WRAPPERINTERNAL_H_
-#define _GGS_LIBTORRENT_WRAPPERINTERNAL_H_
+#pragma once
 
 #include <LibtorrentWrapper/TorrentConfig>
 #include <LibtorrentWrapper/TorrentState>
@@ -65,6 +64,12 @@ namespace GGS {
       void loadSessionState();
 
       void start(const QString& id, TorrentConfig& config);
+
+      /// <summary>Сгенерировать полностью заполненный fast resume файл на основе торрет файла.</summary>
+      /// <param name="id">Id торрента.</param>
+      /// <param name="config">Настройки добавляемого торрента.</param>
+      void createFastResume(const QString& id, TorrentConfig& config);
+
       void stop(const QString& id);
       void remove(const QString& id);
       
@@ -158,6 +163,8 @@ namespace GGS {
         libtorrent::torrent_status::state_t torrentState);
 
       void saveFastResumeWithoutLock(const libtorrent::torrent_handle &handle, boost::shared_ptr<libtorrent::entry> resumeData);
+      void saveFastResumeEntry(const QString &resumeFilePath, const libtorrent::entry &resumeData);
+
       void saveSessionState();
       void cleanIdToTorrentStateMap();
 
@@ -194,5 +201,3 @@ namespace GGS {
     };
   }
 }
-
-#endif // _GGS_LIBTORRENT_WRAPPERINTERNAL_H_

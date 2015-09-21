@@ -13,6 +13,7 @@
 #include <QtCore/QSysInfo>
 
 #include <libtorrent/hasher.hpp>
+#include <libtorrent/storage.hpp>
 
 #define SIGNAL_CONNECT_CHECK(X) { bool result = X; Q_ASSERT_X(result, __FUNCTION__ , #X); }
 
@@ -279,6 +280,45 @@ namespace GGS {
       }
     }
 
+    void WrapperInternal::createFastResume(const QString& id, TorrentConfig& config)
+    {
+      error_code ec;
+      torrent_info torrentInfo(config.pathToTorrentFile().toUtf8().data(), ec);
+      
+      if (ec) {
+        WARNING_LOG << "Can't create torrent info from file" << config.pathToTorrentFile() 
+          << "with reasons" << QString::fromLocal8Bit(ec.message().c_str());
+        return;
+      }
+
+      libtorrent::entry entry;
+      entry["file-format"] = "libtorrent resume file";
+      entry["file-version"] = 1;
+      entry["libtorrent-version"] = LIBTORRENT_VERSION;
+      entry["sequential_download"] = 0;
+      entry["save_path"] = config.downloadPath().toUtf8().data();
+      entry["info-hash"] = torrentInfo.info_hash().to_string();
+            
+      std::vector<std::pair<size_type, std::time_t>> fileSizes 
+        = libtorrent::get_filesizes(torrentInfo.files(), config.downloadPath().toStdString());
+
+      libtorrent::entry::list_type& fl = entry["file sizes"].list();
+      for (std::vector<std::pair<size_type, std::time_t> >::iterator i
+        = fileSizes.begin(), end(fileSizes.end()); i != end; ++i)
+      {
+        libtorrent::entry::list_type p;
+        p.push_back(libtorrent::entry(i->first));
+        p.push_back(libtorrent::entry(i->second));
+        fl.push_back(libtorrent::entry(p));
+      }
+
+      libtorrent::entry::string_type& pieces = entry["pieces"].string();
+      pieces.resize(torrentInfo.num_pieces());
+      std::memset(&pieces[0], 1, pieces.size());
+      
+      this->saveFastResumeEntry(this->getFastResumeFilePath(id), entry);
+    }
+
     void WrapperInternal::stop(const QString& id)
     {
       QMutexLocker lock(&this->_torrentsMapLock);
@@ -506,7 +546,9 @@ namespace GGS {
       }
 
       add_torrent_params p;
-      p.flags = add_torrent_params::flag_override_resume_data;
+      p.flags = add_torrent_params::flag_override_resume_data | 
+                add_torrent_params::flag_use_resume_save_path; // Сомнительное название вводящее в заблуждение, если этот флаг выставлен
+                                                               // то libtorrent не будет использовать путь из resume_data
       p.ti = torrentInfo;
 
       // Должен быть определен дефайн UNICODE
@@ -590,18 +632,7 @@ namespace GGS {
         return;
 
       QString resumeFilePath = this->getFastResumeFilePath(state->id());
-      this->createDirectoryIfNotExists(resumeFilePath);
-      try {
-        const wchar_t *resumePath = reinterpret_cast<const wchar_t*>(resumeFilePath.utf16());
-        boost::filesystem::ofstream out(resumePath, std::ios_base::binary);
-        out.unsetf(std::ios_base::skipws);
-        bencode(std::ostream_iterator<char>(out), *resumeData);
-        out.close();
-      } catch(boost::filesystem::filesystem_error& err) {
-        DEBUG_LOG << err.what();
-      } catch(std::exception& stdExc) {
-        DEBUG_LOG << stdExc.what();
-      }
+      this->saveFastResumeEntry(resumeFilePath, *resumeData);
     }
 
     QString WrapperInternal::getFastResumeFilePath(const QString& id)
@@ -1233,5 +1264,20 @@ namespace GGS {
       return true;
     }
 
+    void WrapperInternal::saveFastResumeEntry(const QString &resumeFilePath, const libtorrent::entry &resumeData)
+    {
+      this->createDirectoryIfNotExists(resumeFilePath);
+      try {
+        const wchar_t *resumePath = reinterpret_cast<const wchar_t*>(resumeFilePath.utf16());
+        boost::filesystem::ofstream out(resumePath, std::ios_base::binary);
+        out.unsetf(std::ios_base::skipws);
+        bencode(std::ostream_iterator<char>(out), resumeData);
+        out.close();
+      } catch (boost::filesystem::filesystem_error& err) {
+        DEBUG_LOG << err.what();
+      } catch (std::exception& stdExc) {
+        DEBUG_LOG << stdExc.what();
+      }
+    }
   }
 }

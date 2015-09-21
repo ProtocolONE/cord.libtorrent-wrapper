@@ -16,7 +16,6 @@
 
 int main(int argc, char *argv[])
 {
-    //QCoreApplication a(argc, argv);
     QApplication a(argc, argv);
     Program program;
     qDebug() << "shutdown connect " << QObject::connect(&a, SIGNAL(aboutToQuit()), &program, SLOT(beforeShutdown()));
