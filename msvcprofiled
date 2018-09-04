@@ -10,7 +10,7 @@ compiler.toolset=v141_xp
 build_type=Debug
 
 [options]
-shared=False
+shared=True
 
 [build_requires]
 Libtorrent/1.0.5@common/stable
