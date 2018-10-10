@@ -64,3 +64,5 @@ packages/
 
 !build/
 !obj/
+.vs/
+depends/
