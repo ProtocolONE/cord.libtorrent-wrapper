@@ -137,30 +137,15 @@ namespace GGS {
       this->_internalWrapper->setSeedEnabled(value);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
     bool Wrapper::getInfoHash(const QString& path, QString& result)
     {
       return this->_internalWrapper->getInfoHash(path, result);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
     bool Wrapper::getFileList(const QString& path, QList<QString> &result)
     {
       return this->_internalWrapper->getFileList(path, result);
     }
 
-<<<<<<< HEAD
-=======
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
->>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
   }
 }

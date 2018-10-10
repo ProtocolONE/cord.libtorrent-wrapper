@@ -16,18 +16,8 @@ namespace GGS {
     TorrentState::TorrentState() 
       : _backgroundSeeding(false)
       , _isStopping(false)
-<<<<<<< HEAD
-<<<<<<< HEAD
       , _rehashOnly(false)
       , _isSeedEnable(true)
-<<<<<<< HEAD
-=======
->>>>>>> 47ffffb... QGNA-398 Добавил в стайт торрент информацию об остановке и сигнал остановки будет посылаться только после вызова stop. В будущем лучше убрать эту функциональность в DownloadService.
-=======
-      , _rehashOnly(false)
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     {
     }
 
@@ -75,15 +65,7 @@ namespace GGS {
       this->_backgroundSeeding = value;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     bool TorrentState::isStopping() const
-=======
-    bool TorrentState::isStopping()
->>>>>>> 47ffffb... QGNA-398 Добавил в стайт торрент информацию об остановке и сигнал остановки будет посылаться только после вызова stop. В будущем лучше убрать эту функциональность в DownloadService.
-=======
-    bool TorrentState::isStopping() const
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
     {
       return this->_isStopping;
     }
@@ -93,10 +75,6 @@ namespace GGS {
       this->_isStopping = value;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
     bool TorrentState::rehashOnly() const
     {
       return this->_rehashOnly;
@@ -107,10 +85,6 @@ namespace GGS {
       this->_rehashOnly = value;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     void TorrentState::setIsSeedEnable(bool enable)
     {
       this->_isSeedEnable;
@@ -121,12 +95,5 @@ namespace GGS {
       return this->_isSeedEnable;
     }
 
-<<<<<<< HEAD
-=======
->>>>>>> 47ffffb... QGNA-398 Добавил в стайт торрент информацию об остановке и сигнал остановки будет посылаться только после вызова stop. В будущем лучше убрать эту функциональность в DownloadService.
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
   }
 }

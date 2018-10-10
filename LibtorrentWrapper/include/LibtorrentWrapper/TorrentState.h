@@ -30,8 +30,6 @@ namespace GGS {
       bool backgroundSeeding() const;
       void setBackgroundSeeding(bool value);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       bool isStopping() const;
       void setIsStopping(bool value);
 
@@ -41,51 +39,17 @@ namespace GGS {
       bool isSeedEnable() const;
       void setIsSeedEnable(bool enable);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       QString pathToTorrent() const;
       void setPathToTorrent(const QString& path);
 
-=======
-      bool isStopping();
-      void setIsStopping(bool value);
-
->>>>>>> 47ffffb... QGNA-398 Добавил в стайт торрент информацию об остановке и сигнал остановки будет посылаться только после вызова stop. В будущем лучше убрать эту функциональность в DownloadService.
-=======
-      bool isStopping() const;
-      void setIsStopping(bool value);
-
-      bool rehashOnly() const;
-      void setRehashOnly(bool value);
-
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
-=======
-      QString pathToTorrent() const;
-      void setPathToTorrent(const QString& path);
-
->>>>>>> 78744f6... QGNA-295 Запоминаем путь для torrent файла
     private:
       QString _id;
       QString _pathToTorrent;
       libtorrent::torrent_handle _handle;
       bool _backgroundSeeding;
       bool _isStopping;
-<<<<<<< HEAD
-<<<<<<< HEAD
       bool _rehashOnly;
       bool _isSeedEnable;
-=======
->>>>>>> 47ffffb... QGNA-398 Добавил в стайт торрент информацию об остановке и сигнал остановки будет посылаться только после вызова stop. В будущем лучше убрать эту функциональность в DownloadService.
-=======
-      bool _rehashOnly;
-<<<<<<< HEAD
-
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
-      bool _isSeedEnable;
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     };
 
   }

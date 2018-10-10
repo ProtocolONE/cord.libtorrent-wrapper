@@ -2,7 +2,7 @@
 #include "Program.h"
 
 #include <QtCore/QCoreApplication>
-#include <QtWidgets/QApplication>
+#include <QtGui/QApplication>
 #include <QtCore/QTimer>
 #include <QtCore/QObject>
 #include <QtCore/QDebug>

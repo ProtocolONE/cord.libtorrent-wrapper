@@ -39,32 +39,16 @@ namespace GGS {
       bool rehashOnly() const;
       void setRehashOnly(bool value);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       bool isSeedEnable() const;
       void setIsSeedEnable(bool enable);
 
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
-      bool isSeedEnable() const;
-      void setIsSeedEnable(bool enable);
-
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     private:
       QString _pathToTorrentFile;
       QString _downloadPath;
       bool _isReloadRequired;
       bool _forceRehash;
       bool _rehashOnly;
-<<<<<<< HEAD
-<<<<<<< HEAD
       bool _isSeedEnable;
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
-      bool _isSeedEnable;
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     };
 
   }

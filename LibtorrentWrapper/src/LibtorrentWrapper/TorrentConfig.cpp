@@ -17,16 +17,8 @@ namespace GGS {
       : _isReloadRequired(false)
       , _forceRehash(false)
       , _rehashOnly(false)
-<<<<<<< HEAD
-<<<<<<< HEAD
       , _isSeedEnable(true)
 
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
-      , _isSeedEnable(true)
-
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     {
     }
 
@@ -84,10 +76,6 @@ namespace GGS {
       this->_rehashOnly = value;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
     void TorrentConfig::setIsSeedEnable(bool enable)
     {
       this->_isSeedEnable;
@@ -98,10 +86,5 @@ namespace GGS {
       return this->_isSeedEnable;
     }
 
-<<<<<<< HEAD
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
   }
 }

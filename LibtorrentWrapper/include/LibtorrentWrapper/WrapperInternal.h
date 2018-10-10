@@ -109,21 +109,10 @@ namespace GGS {
       bool seedEnabled() const;
       void setSeedEnabled(bool value);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       bool getInfoHash(const QString& path, QString& result);
 
       bool getFileList(const QString& path, QList<QString> &result);
 
-<<<<<<< HEAD
-=======
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
-      bool getInfoHash(const QString& path, QString& result);
-
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
->>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
     signals:
       void listeningPortChanged(unsigned short port);
       void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
@@ -193,26 +182,12 @@ namespace GGS {
       QMap<QString, TorrentState*> _infohashToTorrentState;
 
       QMap<QString, ResumeInfo> _resumeInfo;
-<<<<<<< HEAD
-<<<<<<< HEAD
       bool _seedEnabled;
       bool _shuttingDown;
       bool _initialized;
-=======
-
-      bool _seedEnabled;
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
-      bool _seedEnabled;
-      bool _shuttingDown;
-      bool _initialized;
-<<<<<<< HEAD
->>>>>>> 52c0942... QGNA-295 Добавил проверки - создан ли врапепр.
-=======
 	  
       qint64 _lastDirectDownloaded;
       qint64 _lastPeerDownloaded;
->>>>>>> 017b74e... QGNA-471 Fixed bug with direct/peer download rates, spelling fix: playloadUploadRate -> payloadUploadRate
     };
   }
 }

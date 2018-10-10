@@ -25,21 +25,10 @@ namespace GGS {
       : QObject(parent)
       , _session(0)
       , _seedEnabled(false)
-<<<<<<< HEAD
-<<<<<<< HEAD
       , _shuttingDown(false)
       , _initialized(false)
-<<<<<<< HEAD
-=======
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
-      , _shuttingDown(false)
-      , _initialized(false)
->>>>>>> 52c0942... QGNA-295 Добавил проверки - создан ли врапепр.
-=======
 	  , _lastDirectDownloaded(0)
 	  , _lastPeerDownloaded(0)
->>>>>>> 017b74e... QGNA-471 Fixed bug with direct/peer download rates, spelling fix: playloadUploadRate -> payloadUploadRate
     {
       this->_fastResumeWaitTimeInSec = 30;
       this->_fastresumeCounterMax = 40;
@@ -79,10 +68,6 @@ namespace GGS {
       this->_sessionsSettings.allow_reordered_disk_operations = true;
       this->_sessionsSettings.no_connect_privileged_ports = true;
       this->_sessionsSettings.lock_files = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d29ae78... QGNA-407 При каком-то из обновлений произошел регресс в система скачивания игр
       
       this->_sessionsSettings.prefer_udp_trackers = false;
       this->_sessionsSettings.rate_limit_utp = true;
@@ -98,12 +83,6 @@ namespace GGS {
       this->_sessionsSettings.inactivity_timeout = 180;
       this->_sessionsSettings.mixed_mode_algorithm = session_settings::prefer_tcp;
       
-<<<<<<< HEAD
-=======
-
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
->>>>>>> d29ae78... QGNA-407 При каком-то из обновлений произошел регресс в система скачивания игр
       // QGNA-278 Ограничим полуоткрытые для XP
       if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
         this->_sessionsSettings.half_open_limit = 5;
@@ -162,19 +141,8 @@ namespace GGS {
         << " background " << state->backgroundSeeding()
         << " reload require  " << config.isReloadRequired();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       if (state->pathToTorrent() != config.pathToTorrentFile())
         config.setIsReloadRequired(true);
-=======
-      if (state->pathToTorrent() != config.pathToTorrentFile()) {
-        config.setIsReloadRequired(true);
-      }
->>>>>>> 78744f6... QGNA-295 Запоминаем путь для torrent файла
-=======
-      if (state->pathToTorrent() != config.pathToTorrentFile())
-        config.setIsReloadRequired(true);
->>>>>>> 205f687... QGNA-295 Код ревью.
       
       if (config.isReloadRequired()) {
         this->_session->remove_torrent(state->handle());
@@ -410,18 +378,8 @@ namespace GGS {
       state->setHandle(h);
       state->setBackgroundSeeding(backgroudSeeding);
       state->setRehashOnly(config.rehashOnly());
-<<<<<<< HEAD
-<<<<<<< HEAD
       state->setIsSeedEnable(config.isSeedEnable());
       state->setPathToTorrent(config.pathToTorrentFile());
-<<<<<<< HEAD
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
-      state->setIsSeedEnable(config.isSeedEnable());
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
-=======
->>>>>>> 78744f6... QGNA-295 Запоминаем путь для torrent файла
 
       this->_idToTorrentState[id] = state;
       QString infohash = QString::fromStdString(torrentInfo->info_hash().to_string());
@@ -607,21 +565,6 @@ namespace GGS {
 
       for (std::vector<libtorrent::peer_info>::iterator i = peerInfo.begin(); i != peerInfo.end(); ++i) {
         if ((*i).connection_type == libtorrent::peer_info::web_seed) {
-<<<<<<< HEAD
-          directDownRate += (*i).down_speed;
-          directDownload += (*i).total_download;
-<<<<<<< HEAD
-<<<<<<< HEAD
-        } 
-          
-=======
-        }
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
-        } 
-          
->>>>>>> d29ae78... QGNA-407 При каком-то из обновлений произошел регресс в система скачивания игр
-=======
           directDownloadSpeed += (*i).down_speed;
           directDownloaded += (*i).total_download;
         } 
@@ -634,7 +577,6 @@ namespace GGS {
       if (peerInfoSize > 0) {
         this->_lastDirectDownloaded = directDownloaded;
         this->_lastPeerDownloaded = peerDownloaded;
->>>>>>> 017b74e... QGNA-471 Fixed bug with direct/peer download rates, spelling fix: playloadUploadRate -> payloadUploadRate
       }
 
       args.setDirectPayloadDownloadRate(directDownloadSpeed);
@@ -741,10 +683,6 @@ namespace GGS {
         return;
       }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
       if (state->rehashOnly()) {
         if (newState == torrent_status::downloading) {
           torrent_status status = handle.status(0);
@@ -760,20 +698,9 @@ namespace GGS {
         }
       }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
       if (!state->isSeedEnable() && newState == torrent_status::seeding)
         state->handle().pause();
 
-=======
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
-      if (!state->isSeedEnable() && newState == torrent_status::seeding)
-        state->handle().pause();
-
->>>>>>> 72f0035... QGNA-295 Добавил параметр isSeeding
       emit this->torrentStatusChanged(state->id(), this->convertStatus(oldState), this->convertStatus(newState));
       
       torrent_status status = handle.status(0);
@@ -804,12 +731,6 @@ namespace GGS {
         this->_resumeInfo[state->id()].setFinished(true);
         this->saveSessionState();
       }
-<<<<<<< HEAD
-
-      if (!this->_seedEnabled)
-        handle.pause();
-=======
->>>>>>> 97fc3e4... QGNA-295 is seed enable
 
       if (!this->_seedEnabled)
         handle.pause();
@@ -1096,10 +1017,6 @@ namespace GGS {
       this->_seedEnabled = value;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
     bool WrapperInternal::getInfoHash(const QString& path, QString& result)
     {
       std::vector<char> in;
@@ -1128,10 +1045,6 @@ namespace GGS {
       return true;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
     bool WrapperInternal::getFileList(const QString& path, QList<QString> &result)
     {
       error_code ec;
@@ -1147,17 +1060,8 @@ namespace GGS {
 
       int count = torrentInfo->num_files();
       for (int i = 0; i < count; ++i) {
-<<<<<<< HEAD
-<<<<<<< HEAD
         std::string name = torrentInfo->file_at(i).path;
         QString fileName = QString::fromUtf8(name.c_str(), name.size());
-=======
-        QString fileName = QString::fromStdString(torrentInfo->file_at(i).path);
->>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
-=======
-        std::string name = torrentInfo->file_at(i).path;
-        QString fileName = QString::fromUtf8(name.c_str(), name.size());
->>>>>>> 88601ea... QGNA-295 Починил функцию получения спсика файлов  - конвертация utf8->ucs2
         fileName = fileName.right(fileName.length() - torrentName.length() - 1);
         result.append(fileName);
       }
@@ -1165,12 +1069,5 @@ namespace GGS {
       return true;
     }
 
-<<<<<<< HEAD
-=======
->>>>>>> af5c8cc... QGNA-389 Добавил возможность выключать/выключать сидирование.
-=======
->>>>>>> 037a373... QGNA-295 Добавил возможность получит infohash торпента. Добавил вариант старта торрента для рехешинга.
-=======
->>>>>>> 1b9b91e... QGNA-295 Добавил метод на получения списка файлов.
   }
 }
