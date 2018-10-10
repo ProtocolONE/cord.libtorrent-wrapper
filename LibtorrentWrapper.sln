@@ -7,7 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibtorrentWrapper", "Libtor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6D270CBA-7A80-4E14-983E-320675E82841}"
 	ProjectSection(SolutionItems) = preProject
-		Deploy.props = Deploy.props
 		Readme.txt = Readme.txt
 	EndProjectSection
 EndProject
@@ -20,32 +19,22 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
-		Static Debug|Win32 = Static Debug|Win32
-		Static Release|Win32 = Static Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Debug|Win32.Build.0 = Debug|Win32
 		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Release|Win32.ActiveCfg = Release|Win32
 		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Release|Win32.Build.0 = Release|Win32
-		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Static Debug|Win32.ActiveCfg = Static Debug|Win32
-		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Static Debug|Win32.Build.0 = Static Debug|Win32
-		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Static Release|Win32.ActiveCfg = Static Release|Win32
-		{B7D6EECE-736C-4051-BAE3-DE298F390124}.Static Release|Win32.Build.0 = Static Release|Win32
 		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Debug|Win32.Build.0 = Debug|Win32
 		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Release|Win32.ActiveCfg = Release|Win32
 		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Release|Win32.Build.0 = Release|Win32
-		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Static Debug|Win32.ActiveCfg = Static Debug|Win32
-		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Static Debug|Win32.Build.0 = Static Debug|Win32
-		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Static Release|Win32.ActiveCfg = Static Release|Win32
-		{7E478D0B-76CC-4BFF-80DF-DAFBBDE75E3B}.Static Release|Win32.Build.0 = Static Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {75DC724A-AB5D-45E1-84BE-CE69B07156DD}
 		Qt5Version = $(DefaultQtVersion)
+		SolutionGuid = {75DC724A-AB5D-45E1-84BE-CE69B07156DD}
 	EndGlobalSection
 EndGlobal
