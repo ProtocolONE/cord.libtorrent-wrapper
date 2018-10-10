@@ -28,11 +28,18 @@ namespace GGS {
       explicit Wrapper(QObject *parent = 0);
       ~Wrapper();
 
+      enum Profile {
+        DEFAULT_PROFILE = 0,
+        HIGH_PERFORMANCE_SEED = 1,
+        MIN_MEMORY_USAGE = 2
+      };
 
       /// <summary>Инициализирует торрент движок. Необходимо выхвать 1 раз перед использованием.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
-      void initEngine();
-
+      void initEngine(Wrapper::Profile profile = DEFAULT_PROFILE);
+            
+      /// <summary>Позволяет изменить профиль торрент движка в активной сессии.</summary>
+      void setProfile(Wrapper::Profile profile); 
 
       /// <summary>Скачать торрент. Где взять торрент файл и куда качать передается через TorrentConfig.
       /// 				 Id - идентификатор торрента. По нему будут приходить сигнал и с мпомщью него можно остановить торрент.
@@ -177,6 +184,21 @@ namespace GGS {
         \return true if it succeeds, false if it fails.
       */
       bool getFileList(const QString& path, QList<QString> &result);
+
+      /*!
+        \fn Wrapper::setCredentials(const QString &userId, const QString &hash);
+        \brief Устанавливает идентификатор пользователя, выполняеющего загрузку торрента. Подробнее в QGNA-1319.
+
+        \param userId Идентификатор пользователя
+        \param hash Хеш для текущего идентификатора
+      */
+      void setCredentials(const QString &userId, const QString &hash);
+
+      /*!
+      \fn Wrapper::resetCredentials();
+      \brief Сбрасывает выставленные с помощью setCredentials данные пользователя.
+      */
+      void resetCredentials();
 
     public slots:
       /*!

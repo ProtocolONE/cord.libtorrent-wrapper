@@ -10,10 +10,22 @@
 
 #include <LibtorrentWrapper/Wrapper>
 #include <LibtorrentWrapper/WrapperInternal>
+#include <LibtorrentWrapper/SessionSettings.h>
 
 namespace GGS {
   namespace Libtorrent
   {
+    libtorrent::session_settings resolveFromProfile(Wrapper::Profile profile)
+    {
+      if (profile == GGS::Libtorrent::Wrapper::HIGH_PERFORMANCE_SEED) {
+        return highPerformanceSeed();
+      }
+      else if (profile == GGS::Libtorrent::Wrapper::MIN_MEMORY_USAGE){
+        return minMemoryUsage();
+      }
+
+      return defaultProfile();
+    }
 
     Wrapper::Wrapper(QObject *parent)
       : QObject(parent)
@@ -41,10 +53,15 @@ namespace GGS {
     {
       delete this->_internalWrapper;
     }
-
-    void Wrapper::initEngine()
+   
+    void Wrapper::initEngine(Wrapper::Profile profile /*= DEFAULT_PROFILE*/)
     {
-      this->_internalWrapper->initEngine();
+      this->_internalWrapper->initEngine(resolveFromProfile(profile));
+    }
+
+    void Wrapper::setProfile(Wrapper::Profile profile)
+    {
+      this->_internalWrapper->setProfile(resolveFromProfile(profile));
     }
 
     void Wrapper::start(const QString& id, TorrentConfig& config)
@@ -157,5 +174,14 @@ namespace GGS {
       return this->_internalWrapper->getFileList(path, result);
     }
 
+    void Wrapper::setCredentials(const QString &userId, const QString &hash)
+    {
+      this->_internalWrapper->setCredentials(userId, hash);
+    }
+
+    void Wrapper::resetCredentials()
+    {
+      this->_internalWrapper->resetCredentials();
+    }
   }
 }

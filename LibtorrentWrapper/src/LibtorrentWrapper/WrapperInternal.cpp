@@ -11,6 +11,7 @@
 #include <LibtorrentWrapper/WrapperInternal>
 #include <QtCore/QFileInfo>
 #include <QtCore/QSysInfo>
+#include <QtCore/QUrl>
 
 #include <libtorrent/hasher.hpp>
 #include <libtorrent/storage.hpp>
@@ -30,6 +31,9 @@ namespace GGS {
       , _initialized(false)
       , _lastDirectDownloaded(0)
       , _lastPeerDownloaded(0)
+      , _uploadRateLimit(-1)
+      , _downloadRateLimit(-1)
+      , _connectionsLimit(-1)
     {
       this->_fastResumeWaitTimeInSec = 30;
       this->_fastresumeCounterMax = 40;
@@ -50,8 +54,8 @@ namespace GGS {
       delete this->_session;
     }
 
-    void WrapperInternal::initEngine()
-    {
+    void WrapperInternal::initEngine(libtorrent::session_settings &settings)
+{
       QMutexLocker lock(&this->_torrentsMapLock);
 
       if (this->_shuttingDown)
@@ -61,144 +65,15 @@ namespace GGS {
       // 2. load_state()
       // 3. add_extension()
       // 4. start DHT, LSD, UPnP, NAT-PMP etc
-      
-      this->_sessionsSettings.user_agent = std::string("qgna/").append(LIBTORRENT_VERSION);
-
-      this->_sessionsSettings.optimize_hashing_for_speed = true;
-      this->_sessionsSettings.dont_count_slow_torrents = false; //!
-      this->_sessionsSettings.ban_web_seeds = false; //!
-      this->_sessionsSettings.allow_reordered_disk_operations = true; //!
-      this->_sessionsSettings.no_connect_privileged_ports = true; //! DDOS safe, true default
-      this->_sessionsSettings.lock_files = false; //! We can`t disable it due security reasons
-
-
-      this->_sessionsSettings.prefer_udp_trackers = true; //! In out config false, using tcp is prefered
-      this->_sessionsSettings.rate_limit_utp = true; //! Should be true, we limit speed in config of app
-
-      this->_sessionsSettings.tick_interval = 80; //! Default is 100ms
-
-      //! Default 3 and 2 is upload 2 times great then download. Can`t be less then 2.
-      this->_sessionsSettings.share_mode_target = 2; 
-
-      //! But may be bittyrant_choker would be better
-      this->_sessionsSettings.choking_algorithm = session_settings::fixed_slots_choker; 
-
-      this->_sessionsSettings.torrent_connect_boost = 30;  //! Bet  ter warm up downloading, DO NOT DISABLE!!!
-      this->_sessionsSettings.utp_num_resends = 4; //! Need to disable ddos user lan
-
-      this->_sessionsSettings.allow_multiple_connections_per_ip = true;
-
-      //don't retry peers if they fail once. Let them connect to us if they want to
-      this->_sessionsSettings.max_failcount = 1; 
-      
-      // don't let connections linger for too long
-      this->_sessionsSettings.min_reconnect_time = 30; //! Default 60
-      this->_sessionsSettings.peer_connect_timeout = 5; //! Default 10
-      this->_sessionsSettings.peer_timeout = 20; //!
-      this->_sessionsSettings.inactivity_timeout = 20;  //Was 180
-      this->_sessionsSettings.request_timeout = 10; //! Was 20
-      this->_sessionsSettings.mixed_mode_algorithm = session_settings::prefer_tcp;
-     
-      this->_sessionsSettings.use_disk_cache_pool = true; //! the disk cache performs better with the pool allocator
-      
-      //! True by default and allow the buffer size to grow for the uTP socket
-      this->_sessionsSettings.utp_dynamic_sock_buf = true; 
-      this->_sessionsSettings.anonymous_mode = false;
-
-      this->_sessionsSettings.unchoke_slots_limit = 500; //! Was 20, unchoke many peers
-      this->_sessionsSettings.connection_speed = 50; //Was 30
-
-      this->_sessionsSettings.handshake_timeout = 3; //! App specific, much of peer is offline
-      this->_sessionsSettings.connections_slack = 50; //! Was 15
-
-      // allow peers to request a lot of blocks at a time,
-      // to be more likely to saturate the bandwidth-delay-
-      // product.
-      this->_sessionsSettings.max_allowed_in_request_queue = 2000;
-      this->_sessionsSettings.max_out_request_queue = 1000;
-
-      this->_sessionsSettings.file_pool_size = 500; //!By default
-      this->_sessionsSettings.alert_queue_size = 5000; //! They prefer 50 000, was 1 000
-            
-      this->_sessionsSettings.connections_limit = 400; //! Was 200, they prefer 8 000 (!!!)
-      this->_sessionsSettings.listen_queue_size = 200; //! // allow lots of peers to try to connect simultaneously
-
-      //! Was 4000, but we need more DHT capacity to ping more peers candidates before trying to connect
-      this->_sessionsSettings.dht_upload_rate_limit = 20000; 
-
-      // we're more interested in downloading than seeding only service a read job every 1000 write job (when
-      // disk is congested). Presumably on a big box, writes are extremely cheap and reads are relatively expensive
-      // so that's the main reason this ratio should be adjusted
-      this->_sessionsSettings.read_job_every = 100; //! ONE OF MOST IMPORTANT!!!
-      this->_sessionsSettings.use_read_cache = true;
-      this->_sessionsSettings.cache_buffer_chunk_size = 128;
-      this->_sessionsSettings.read_cache_line_size = 32;
-      this->_sessionsSettings.write_cache_line_size = 32;
-
-      this->_sessionsSettings.cache_size = 1024 * 4; //! We use 64mb, they 1gb, default is 16mb
-      this->_sessionsSettings.low_prio_disk = true; //! True in they config, NEVER SET FALSE!!!
-      this->_sessionsSettings.cache_expiry = 60 * 60;
-
-      // this is expensive and could add significant delays when freeing a large number of buffers
-      this->_sessionsSettings.lock_disk_cache = false;
-
-      //! the max number of bytes pending write before we throttle download rate, default is 1024 * 1024
-      this->_sessionsSettings.max_queued_disk_bytes = 10 * 1024 * 1024; 
-
-      //! It`s default. Flush write cache in a way to minimize the amount we need to read back once we want to hash-check the piece.
-      // i.e. try to flush all blocks in-order
-      this->_sessionsSettings.disk_cache_algorithm = session_settings::avoid_readback;
-      this->_sessionsSettings.explicit_read_cache = 0;
-
-      //! Was 10, now 0. Prevent fast pieces to interfere with suggested pieces since we unchoke everyone,
-      // we don't need fast pieces anyway
-      this->_sessionsSettings.allowed_fast_set_size = 0;
-      
-      //! suggest pieces in the read cache for higher cache hit rate
-      this->_sessionsSettings.suggest_mode = session_settings::suggest_read_cache;
-
-      this->_sessionsSettings.close_redundant_connections = true; //True by default
-      this->_sessionsSettings.max_rejects = 10; //By default
-
-      //! Next 2 default is 16 * 1024, specifies the buffer sizes set on peer sockets
-      this->_sessionsSettings.recv_socket_buffer_size = 1024 * 1024;
-      this->_sessionsSettings.send_socket_buffer_size = 1024 * 1024;
-
-      //! We do not use auto managed torrents so it`s just copy paste from thet prefer config.
-      this->_sessionsSettings.active_limit = 2000;
-      this->_sessionsSettings.active_tracker_limit = 2000;
-      this->_sessionsSettings.active_dht_limit = 600;
-      this->_sessionsSettings.active_seeds = 2000;
-
-      //! in order to be able to deliver very high upload rates, this should be able to cover the bandwidth delay
-      // product. Assuming an RTT of 500 ms, and a send rate of 20 MB/s, the upper limit should be 10 MB. 
-      // DEFAULT WAS 10 kb !!!
-      this->_sessionsSettings.send_buffer_watermark = 3 * 1024 * 1024;
-
-      //! put 1.5 seconds worth of data in the send buffer this gives the disk I/O more heads-up on disk reads, and 
-      // can maximize throughput.
-      // DEFAULT IS 50 !!!
-      this->_sessionsSettings.send_buffer_watermark_factor = 150;
-      
-      //! always stuff at least 1 MiB down each peer pipe, to quickly ramp up send rates
-      this->_sessionsSettings.send_buffer_low_watermark = 1 * 1024 * 1024;
-      
-      //! max 'bottled' http receive buffer/url torrent size, was 4 mb
-      this->_sessionsSettings.max_http_recv_buffer_size = 6 * 1024 * 1024;
-      
-      // QGNA-278 Ограничим полуоткрытые для XP
-      if (QSysInfo::windowsVersion() == QSysInfo::WV_XP)
-        this->_sessionsSettings.half_open_limit = 5;
 
       this->_session = new session(fingerprint("LT", LIBTORRENT_VERSION_MAJOR, LIBTORRENT_VERSION_MINOR, 0, 0)
         , session::start_default_features | session::add_default_plugins
         , alert::error_notification
         + alert::status_notification
-        + alert::tracker_notification 
+        + alert::tracker_notification
         + alert::storage_notification
-        );
+      );
 
-      // UNDONE: беда тут - а на выходе чутка подтекает.
       this->_session->start_lsd();
       this->_session->start_upnp();
       this->_session->start_natpmp();
@@ -214,10 +89,9 @@ namespace GGS {
         DEBUG_LOG << "can't listen on " << this->_startupListeningPort << " error code " << ec;
         emit this->listenFailed(this->_startupListeningPort, ec.value());
       }
-           
 
       this->loadSessionState();
-      this->_session->set_settings(this->_sessionsSettings);
+      this->setProfile(settings);
 
       if (this->_seedEnabled)
         QTimer::singleShot(300000, this, SLOT(backgroundSeedStart()));
@@ -226,6 +100,23 @@ namespace GGS {
       this->_progressTimer.start(1000);
 
       this->_initialized = true;
+    }
+
+    void WrapperInternal::setProfile(libtorrent::session_settings &settings)
+    {
+      if (!this->_session || this->_shuttingDown)
+        return;
+
+      if (this->_connectionsLimit != -1)
+        settings.connections_limit = this->_connectionsLimit;
+
+      if (this->_uploadRateLimit != -1) 
+        settings.upload_rate_limit = this->_uploadRateLimit;
+      
+      if (this->_downloadRateLimit != -1)
+        settings.download_rate_limit = this->_downloadRateLimit;
+      
+      this->_session->set_settings(settings);
     }
 
     void WrapperInternal::start(const QString& id, TorrentConfig& config)
@@ -546,9 +437,7 @@ namespace GGS {
       }
 
       add_torrent_params p;
-      p.flags = add_torrent_params::flag_override_resume_data | 
-                add_torrent_params::flag_use_resume_save_path; // Сомнительное название вводящее в заблуждение, если этот флаг выставлен
-                                                               // то libtorrent не будет использовать путь из resume_data
+      p.flags = add_torrent_params::flag_override_resume_data;
       p.ti = torrentInfo;
 
       // Должен быть определен дефайн UNICODE
@@ -570,13 +459,14 @@ namespace GGS {
       }
 
       torrent_handle h = this->_session->add_torrent(p, ec);
-
       if (ec) {
         QString str = QString::fromLocal8Bit(ec.message().c_str());
         CRITICAL_LOG << "start error" << str << "in" << id;
         emit this->startTorrentFailed(id, ec.value());
         return;
       }
+
+      this->updateTrackerCredentials(h);
 
       TorrentState *state = new TorrentState();
       state->setId(id);
@@ -1063,40 +953,48 @@ namespace GGS {
 
     unsigned short WrapperInternal::listeningPort() const
     {
-      if (this->_session)
-        return this->_session->listen_port();
-
-      return 0;
+      if (!this->_session || this->_shuttingDown)
+        return 0;
+      
+      return this->_session->listen_port();
     }
 
     void WrapperInternal::setUploadRateLimit(int bytesPerSecond)
     {
-      if (!this->_session)
+      if (!this->_session || this->_shuttingDown)
         return;
 
-      this->_sessionsSettings.upload_rate_limit = bytesPerSecond;
-      this->_session->set_settings(this->_sessionsSettings);
+      this->_uploadRateLimit = bytesPerSecond;
+
+      libtorrent::session_settings settings = this->_session->settings();
+      settings.upload_rate_limit = bytesPerSecond;
+      this->_session->set_settings(settings);
     }
 
     void WrapperInternal::setDownloadRateLimit(int bytesPerSecond)
     {
-      if (!this->_session)
+      if (!this->_session || this->_shuttingDown)
         return;
 
-      this->_sessionsSettings.download_rate_limit = bytesPerSecond;
-      this->_session->set_settings(this->_sessionsSettings);
+      this->_downloadRateLimit = bytesPerSecond;
+
+      libtorrent::session_settings settings= this->_session->settings();
+      settings.download_rate_limit = bytesPerSecond;
+            
+      this->_session->set_settings(settings);
     }
 
     int WrapperInternal::uploadRateLimit() const
     {
-      if (!this->_session)
+      if (!this->_session || this->_shuttingDown)
         return 0;
+
       return this->_session->settings().upload_rate_limit;
     }
 
     int WrapperInternal::downloadRateLimit() const
     {
-      if (!this->_session)
+      if (!this->_session || this->_shuttingDown)
         return 0;
 
       return this->_session->settings().download_rate_limit;
@@ -1131,7 +1029,7 @@ namespace GGS {
         delete it.value();
     }
 
-    void WrapperInternal::torrentErrorAlert( const libtorrent::torrent_handle &handle )
+    void WrapperInternal::torrentErrorAlert(const libtorrent::torrent_handle &handle)
     {
       if (!handle.is_valid())
         return;
@@ -1147,7 +1045,7 @@ namespace GGS {
 
     int WrapperInternal::maxConnection()
     {
-      if (!this->_session)
+      if (!this->_session || this->_shuttingDown)
         return 0;
 
       return this->_session->settings().connections_limit;
@@ -1155,11 +1053,15 @@ namespace GGS {
 
     void WrapperInternal::setMaxConnection(int maxConnection)
     {
-      if (!this->_session)
+      if (!this->_session || this->_shuttingDown)
         return;
 
-      this->_sessionsSettings.connections_limit = maxConnection;
-      this->_session->set_settings(this->_sessionsSettings);
+      this->_connectionsLimit = maxConnection;
+
+      libtorrent::session_settings settings = this->_session->settings();
+
+      settings.connections_limit = maxConnection;
+      this->_session->set_settings(settings);
     }
 
     void WrapperInternal::pauseSession()
@@ -1278,6 +1180,63 @@ namespace GGS {
       } catch (std::exception& stdExc) {
         DEBUG_LOG << stdExc.what();
       }
+    }
+    void WrapperInternal::setCredentials(const QString &userId, const QString &hash)
+    {
+      if (this->_credentialUserId == userId && this->_credentialHash == hash)
+        return;
+
+      this->_credentialUserId = userId;
+      this->_credentialHash = hash;
+
+      this->updateCredentials();
+    }
+
+    void WrapperInternal::resetCredentials()
+    {
+      if (this->_credentialUserId.isEmpty() && this->_credentialHash.isEmpty())
+        return;
+
+      this->_credentialUserId.clear();
+      this->_credentialHash.clear();
+
+      this->updateCredentials();
+    }
+    
+    void WrapperInternal::updateCredentials()
+    {
+      for (libtorrent::torrent_handle &torrent : this->_session->get_torrents()) {
+        this->updateTrackerCredentials(torrent);
+      }
+    }
+
+    void WrapperInternal::updateTrackerCredentials(libtorrent::torrent_handle& handle)
+    {
+      auto announceEntries = handle.trackers();
+      bool hasUdpTrackers = false;
+      bool hasEmptyCreds = this->_credentialUserId.isEmpty() || this->_credentialHash.isEmpty();
+      QString query = hasEmptyCreds
+        ? QString()
+        : QString("userId=%1&hash=%2").arg(this->_credentialUserId).arg(this->_credentialHash);
+
+      for (libtorrent::announce_entry &entry : announceEntries) {
+        QUrl announceUrl(QString::fromStdString(entry.url));
+        if (announceUrl.scheme() != "udp")
+          continue;
+               
+        if (hasEmptyCreds && !announceUrl.hasQuery())
+          continue; 
+
+        hasUdpTrackers = true;
+
+        announceUrl.setQuery(query);
+        announceUrl.setPath("/");
+
+        entry.url = announceUrl.toString().toStdString();
+      }
+
+      if (hasUdpTrackers)
+        handle.replace_trackers(announceEntries);
     }
   }
 }

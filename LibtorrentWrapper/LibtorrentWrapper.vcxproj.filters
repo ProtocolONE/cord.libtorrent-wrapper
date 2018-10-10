@@ -94,6 +94,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ResumeInfo.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="src\LibtorrentWrapper\SessionSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\LibtorrentWrapper\EventArgs\ProgressEventArgs.h">
@@ -106,6 +109,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="include\LibtorrentWrapper\ResumeInfo.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="include\LibtorrentWrapper\SessionSettings.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

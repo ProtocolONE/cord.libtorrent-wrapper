@@ -59,15 +59,17 @@ namespace GGS {
       WrapperInternal(QObject *parent = 0);
       ~WrapperInternal();
 
-      void initEngine();
+      void initEngine(libtorrent::session_settings &settings);
+
+      void setProfile(libtorrent::session_settings &settings);
 
       void loadSessionState();
 
       void start(const QString& id, TorrentConfig& config);
 
-      /// <summary>Сгенерировать полностью заполненный fast resume файл на основе торрет файла.</summary>
-      /// <param name="id">Id торрента.</param>
-      /// <param name="config">Настройки добавляемого торрента.</param>
+      /// <summary>РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ РїРѕР»РЅРѕСЃС‚СЊСЋ Р·Р°РїРѕР»РЅРµРЅРЅС‹Р№ fast resume С„Р°Р№Р» РЅР° РѕСЃРЅРѕРІРµ С‚РѕСЂСЂРµС‚ С„Р°Р№Р»Р°.</summary>
+      /// <param name="id">Id С‚РѕСЂСЂРµРЅС‚Р°.</param>
+      /// <param name="config">РќР°СЃС‚СЂРѕР№РєРё РґРѕР±Р°РІР»СЏРµРјРѕРіРѕ С‚РѕСЂСЂРµРЅС‚Р°.</param>
       void createFastResume(const QString& id, TorrentConfig& config);
 
       void stop(const QString& id);
@@ -120,6 +122,10 @@ namespace GGS {
 
       bool getFileList(const QString& path, QList<QString> &result);
 
+      void setCredentials(const QString &userId, const QString &hash);
+
+      void resetCredentials();
+
     signals:
       void listeningPortChanged(unsigned short port);
       void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
@@ -168,6 +174,9 @@ namespace GGS {
       void saveSessionState();
       void cleanIdToTorrentStateMap();
 
+      void updateCredentials();
+      void updateTrackerCredentials(libtorrent::torrent_handle& handle);
+
       QString getSessionStatePath();
 
       QString _torrentConfigDirectoryPath;
@@ -177,7 +186,6 @@ namespace GGS {
 
       int _startupListeningPort;
       libtorrent::session *_session;
-      libtorrent::session_settings _sessionsSettings;
 
       QTimer _alertTimer;
       QTimer _progressTimer;
@@ -195,9 +203,16 @@ namespace GGS {
       bool _seedEnabled;
       bool _shuttingDown;
       bool _initialized;
+
+      int _uploadRateLimit;
+      int _downloadRateLimit;
+      int _connectionsLimit;
     
       qint64 _lastDirectDownloaded;
       qint64 _lastPeerDownloaded;
+
+      QString _credentialUserId;
+      QString _credentialHash;
     };
   }
 }
