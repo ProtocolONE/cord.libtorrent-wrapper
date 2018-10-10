@@ -1,6 +1,6 @@
 #include <LibtorrentWrapper/ResumeInfo.h>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent {
 
     ResumeInfo::ResumeInfo(QObject *parent) 

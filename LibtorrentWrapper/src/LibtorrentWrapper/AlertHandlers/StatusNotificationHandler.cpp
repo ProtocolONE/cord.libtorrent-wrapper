@@ -1,21 +1,11 @@
-/****************************************************************************
-** This file is a part of Syncopate Limited GameNet Application or it parts.
-**
-** Copyright (©) 2011 - 2012, Syncopate Limited and/or affiliates.
-** All rights reserved.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-****************************************************************************/
-
 #include <LibtorrentWrapper/libtorrentwrapper_global.h>
-#include <LibtorrentWrapper/AlertHandlers/StatusNotificationHandler>
-#include <LibtorrentWrapper/WrapperInternal>
+#include <LibtorrentWrapper/AlertHandlers/StatusNotificationHandler.h>
+#include <LibtorrentWrapper/WrapperInternal.h>
 
 #include <QtCore/QDebug>
 #include <QtCore/QString>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent {
     namespace AlertHandlers {
       void StatusNotificationHandler::operator ()(libtorrent::torrent_paused_alert const& a) const

@@ -9,21 +9,40 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Debug|Win32">
+      <Configuration>Static Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Release|Win32">
+      <Configuration>Static Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B7D6EECE-736C-4051-BAE3-DE298F390124}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -32,7 +51,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Deploy.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Deploy.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Deploy.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\Deploy.props" />
   </ImportGroup>
@@ -40,21 +67,33 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" />
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)!build\$(ProjectName)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">$(SolutionDir)!build\$(ProjectName)\$(Configuration)\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)!build\$(ProjectName)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">$(SolutionDir)!build\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\!obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">$(SolutionDir)\!obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">LibtorrentWrapperX86d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">LibtorrentWrapperX86d</TargetName>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\!obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">$(SolutionDir)\!obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">LibtorrentWrapperX86</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">LibtorrentWrapperX86</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>UNICODE;WIN32;QT_CORE_LIB;LIBTORRENTWRAPPER_LIB;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_EXCEPTION_DISABLE;BOOST_FILESYSTEM_VERSION=3;BOOST_SYSTEM_STATIC_LINK=1;BOOST_THREAD_USE_LIB=1;TORRENT_DEBUG;TORRENT_DISABLE_ENCRYPTION;TORRENT_DISABLE_INVARIANT_CHECKS;TORRENT_NO_DEPRECATE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_DEPRECATE;_UNICODE;_WIN32;_WIN32_WINNT=0x0500;__USE_W32_SOCKETS;VLD_CHECK_ENABLED2;QT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UNICODE;WIN32;QT_CORE_LIB;LIBTORRENTWRAPPER_LIB;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_EXCEPTION_DISABLE;BOOST_FILESYSTEM_VERSION=3;BOOST_SYSTEM_STATIC_LINK=1;BOOST_THREAD_USE_LIB=1;TORRENT_DEBUG;TORRENT_DISABLE_ENCRYPTION;TORRENT_DISABLE_INVARIANT_CHECKS;TORRENT_EXPORT_EXTRA=1;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_DEPRECATE;_UNICODE;_WIN32;_WIN32_WINNT=0x0500;__USE_W32_SOCKETS;VLD_CHECK_ENABLED2;QT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;.\;$(ProjectDir)include\;$(BOOST_ROOT);$(VLDDIR)\include;$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include\;$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -67,7 +106,8 @@
       <OutputFile>$(TargetPath)</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(BOOST_ROOT)\stage\lib;$(VLDDIR)\lib\Win32;$(QGNACOMMONDIR)\Rasterbar\Libtorrent\$(LibtorrentArea)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;libtorrentd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;libtorrentd.lib;Iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PreLinkEvent>
       <Command>
@@ -104,6 +144,66 @@ EXIT /B 1
 $(QTDIR)\bin\lupdate.exe "$(ProjectDir)\." -ts "$(ProjectDir)\i18n\$(ProjectName)_en.ts"
 </Command>
     </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;QT_CORE_LIB;LIBTORRENTWRAPPER_STATIC_LIB;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_EXCEPTION_DISABLE;BOOST_FILESYSTEM_VERSION=3;BOOST_SYSTEM_STATIC_LINK=1;BOOST_THREAD_USE_LIB=1;TORRENT_DEBUG;TORRENT_DISABLE_ENCRYPTION;TORRENT_DISABLE_INVARIANT_CHECKS;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_DEPRECATE;_UNICODE;_WIN32;_WIN32_WINNT=0x0500;__USE_W32_SOCKETS;QT_DLL;BOOST_LIB_DIAGNOSTIC;BOOST_ALL_NO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;.\;$(ProjectDir)include\;$(BOOST_ROOT);$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalOptions>/MP4 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(BOOST_ROOT)\stage\lib;$(VLDDIR)\lib\Win32;$(QGNACOMMONDIR)\Rasterbar\Libtorrent\$(LibtorrentArea)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;libtorrentd.lib;Iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
+    </Link>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>IF NOT "$(QGNACOMMONDIR)"=="" (
+@rem Можно раскоментить если решить проблему с хадсон билдом.
+@rem call "$(ProjectDir)etc\incgen.cmd" "$(ProjectDir)include"
+
+xcopy /Y /I /R "$(TargetDir)*.dll" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\bin"
+xcopy /Y /I /R "$(TargetDir)*.lib" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\lib"
+xcopy /Y /I /R "$(TargetDir)*.pdb" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\pdb"
+xcopy /Y /I /R /E "$(ProjectDir)i18n\*" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\i18n"
+@echo !!!!!!!!!!! Change post build event for copy headers !!!!!!!!!!!!!!!!!
+
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\TorrentConfig" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\TorrentConfig.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\libtorrentwrapper_global" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\libtorrentwrapper_global.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\EventArgs\*" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\EventArgs\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\EventArgs\*.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\EventArgs\"
+
+) else (
+ECHO QGNACOMMONDIR not defined!
+EXIT /B 1
+)</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(QTDIR)\bin\lupdate.exe "$(ProjectDir)\." -ts "$(ProjectDir)\i18n\$(ProjectName)_ru.ts"
+$(QTDIR)\bin\lupdate.exe "$(ProjectDir)\." -ts "$(ProjectDir)\i18n\$(ProjectName)_en.ts"
+</Command>
+    </PreBuildEvent>
+    <Lib>
+      <AdditionalDependencies>libtorrentd.lib;Iphlpapi.lib;libboost_date_time-vc141-mt-sgd-1_56.lib;libboost_system-vc141-mt-sgd-1_56.lib;libboost_thread-vc141-mt-sgd-1_56.lib;libboost_chrono-vc141-mt-sgd-1_56.lib;libboost_filesystem-vc141-mt-sgd-1_56.lib</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib;$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\lib\</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -150,107 +250,140 @@ $(QTDIR)\bin\lupdate.exe "$(ProjectDir)\." -ts "$(ProjectDir)\i18n\$(ProjectName
 </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;LIBTORRENTWRAPPER_STATIC_LIB;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_EXCEPTION_DISABLE;BOOST_FILESYSTEM_VERSION=3;BOOST_SYSTEM_STATIC_LINK=1;BOOST_THREAD_USE_LIB=1;TORRENT_DISABLE_ENCRYPTION;TORRENT_DISABLE_INVARIANT_CHECKS;TORRENT_NO_ASSERTS;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_DEPRECATE;_UNICODE;_WIN32;_WIN32_WINNT=0x0500;__USE_W32_SOCKETS;QT_DLL;BOOST_ALL_NO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;.\;$(ProjectDir)include\;$(BOOST_ROOT);$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(BOOST_ROOT)\stage\lib;$(ProjectDir)lib;$(ProjectDir)lib\Release;$(QGNACOMMONDIR)\Rasterbar\Libtorrent\$(LibtorrentArea)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;libtorrent.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>NotSet</ShowProgress>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT "$(QGNACOMMONDIR)"=="" (
+@rem Можно раскоментить если решить проблему с хадсон билдом.
+@rem call "$(ProjectDir)etc\incgen.cmd" "$(ProjectDir)include"
+
+xcopy /Y /I /R "$(TargetDir)*.dll" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\bin"
+xcopy /Y /I /R "$(TargetDir)*.lib" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\lib"
+xcopy /Y /I /R "$(TargetDir)*.pdb" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\pdb"
+xcopy /Y /I /R /E "$(ProjectDir)i18n\*" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\i18n"
+@echo !!!!!!!!!!! Change post build event for copy headers !!!!!!!!!!!!!!!!!
+
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\Wrapper.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\TorrentConfig" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\TorrentConfig.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\EventArgs\*" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\EventArgs\"
+xcopy /Y /I /R /E "$(ProjectDir)include\$(SolutionName)\EventArgs\*.h" "$(QGNACOMMONDIR)\GGS\$(SolutionName)\$(CommonArea)\include\$(SolutionName)\EventArgs\"
+) else (
+ECHO QGNACOMMONDIR not defined!
+EXIT /B 1
+)</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(QTDIR)\bin\lupdate.exe "$(ProjectDir)\." -ts "$(ProjectDir)\i18n\$(ProjectName)_ru.ts"
+$(QTDIR)\bin\lupdate.exe "$(ProjectDir)\." -ts "$(ProjectDir)\i18n\$(ProjectName)_en.ts"
+</Command>
+    </PreBuildEvent>
+    <Lib>
+      <AdditionalDependencies>libtorrent.lib;Iphlpapi.lib;libboost_date_time-vc141-mt-s-1_56.lib;libboost_system-vc141-mt-s-1_56.lib;libboost_thread-vc141-mt-s-1_56.lib;libboost_chrono-vc141-mt-s-1_56.lib;libboost_filesystem-vc141-mt-s-1_56.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\stage\lib\;$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ProgressEventArgs.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ResumeInfo.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Wrapper.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_WrapperInternal.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ProgressEventArgs.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ResumeInfo.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_Wrapper.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_WrapperInternal.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\LibtorrentWrapper\SessionSettings.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\ResumeInfo.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\ErrorNotificationHandler.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\StatusNotificationHandler.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\StorageNotificationHandler.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\TrackerNotificationHandler.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\EventArgs\ProgressEventArgs.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\Wrapper.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\WrapperInternal.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\TorrentConfig.cpp" />
-    <ClCompile Include="src\LibtorrentWrapper\TorrentState.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\LibtorrentWrapper\AlertHandlers\StorageNotificationHandler.h" />
-    <ClInclude Include="include\LibtorrentWrapper\TorrentState.h" />
-    <ClInclude Include="resource.h" />
-    <CustomBuild Include="include\LibtorrentWrapper\ResumeInfo.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ResumeInfo.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ResumeInfo.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
-    </CustomBuild>
-    <CustomBuild Include="include\LibtorrentWrapper\SessionSettings.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Command>
-    </CustomBuild>
-    <ClInclude Include="version.h" />
-    <CustomBuild Include="include\LibtorrentWrapper\EventArgs\ProgressEventArgs.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ProgressEventArgs.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ProgressEventArgs.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
-    </CustomBuild>
-    <CustomBuild Include="include\LibtorrentWrapper\WrapperInternal.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing WrapperInternal.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing WrapperInternal.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
-    </CustomBuild>
     <ClInclude Include="include\LibtorrentWrapper\AlertHandlers\ErrorNotificationHandler.h" />
     <ClInclude Include="include\LibtorrentWrapper\AlertHandlers\StatusNotificationHandler.h" />
+    <ClInclude Include="include\LibtorrentWrapper\AlertHandlers\StorageNotificationHandler.h" />
     <ClInclude Include="include\LibtorrentWrapper\AlertHandlers\TrackerNotificationHandler.h" />
-    <ClInclude Include="include\LibtorrentWrapper\TorrentConfig.h" />
-    <CustomBuild Include="include\LibtorrentWrapper\Wrapper.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing Wrapper.h...</Message>
+    <CustomBuild Include="include\LibtorrentWrapper\EventArgs\ProgressEventArgs.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_LIB_DIAGNOSTIC -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing Wrapper.h...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_EXPORT_EXTRA=1 -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_WINDLL  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
     </CustomBuild>
     <ClInclude Include="include\LibtorrentWrapper\libtorrentwrapper_global.h" />
+    <CustomBuild Include="include\LibtorrentWrapper\ResumeInfo.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_LIB_DIAGNOSTIC -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_EXPORT_EXTRA=1 -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+    </CustomBuild>
+    <ClInclude Include="include\LibtorrentWrapper\SessionSettings.h" />
+    <ClInclude Include="include\LibtorrentWrapper\TorrentConfig.h" />
+    <ClInclude Include="include\LibtorrentWrapper\TorrentState.h" />
+    <CustomBuild Include="include\LibtorrentWrapper\Wrapper.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_LIB_DIAGNOSTIC -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_EXPORT_EXTRA=1 -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+    </CustomBuild>
+    <CustomBuild Include="include\LibtorrentWrapper\WrapperInternal.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_STATIC_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -DBOOST_LIB_DIAGNOSTIC -DBOOST_ALL_NO_LIB -D_USING_V110_SDK71_  "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DEBUG -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_EXPORT_EXTRA=1 -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DVLD_CHECK_ENABLED2 -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(VLDDIR)\include" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include" "-I$(QGNACOMMONDIR)\zlib\1.2.3\include\zlib"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DLIBTORRENTWRAPPER_LIB -DBOOST_ASIO_SEPARATE_COMPILATION -DBOOST_ASIO_HASH_MAP_BUCKETS=1021 -DBOOST_EXCEPTION_DISABLE -DBOOST_FILESYSTEM_VERSION=3 -DBOOST_SYSTEM_STATIC_LINK=1 -DBOOST_THREAD_USE_LIB=1 -DTORRENT_DISABLE_ENCRYPTION -DTORRENT_DISABLE_INVARIANT_CHECKS -DTORRENT_NO_DEPRECATE -DTORRENT_NO_ASSERTS -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_DEPRECATE -D_FILE_OFFSET_BITS=64 -D_SCL_SECURE_NO_DEPRECATE -D_UNICODE -D_WIN32 -D_WIN32_WINNT=0x0500 -D__USE_W32_SOCKETS -DQT_DLL -D_USING_V110_SDK71_ -D_WINDLL "-I.\GeneratedFiles" "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I." "-I$(ProjectDir)include" "-I$(BOOST_ROOT)\." "-I$(ProjectDir)include\zlib" "-I$(QGNACOMMONDIR)\Rasterbar\libtorrent\$(LibtorrentArea)\include"</Command>
+    </CustomBuild>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LibtorrentWrapper.rc" />
@@ -258,6 +391,91 @@ $(QTDIR)\bin\lupdate.exe "$(ProjectDir)\." -ts "$(ProjectDir)\i18n\$(ProjectName
   <ItemGroup>
     <None Include="i18n\LibtorrentWrapper_en.ts" />
     <None Include="i18n\LibtorrentWrapper_ru.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ProgressEventArgs.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ResumeInfo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Wrapper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_WrapperInternal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ProgressEventArgs.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ResumeInfo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Wrapper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_WrapperInternal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Debug\moc_ProgressEventArgs.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Debug\moc_ResumeInfo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Debug\moc_Wrapper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Debug\moc_WrapperInternal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Release\moc_ProgressEventArgs.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Release\moc_ResumeInfo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Release\moc_Wrapper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Static Release\moc_WrapperInternal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\ErrorNotificationHandler.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\StatusNotificationHandler.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\StorageNotificationHandler.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\AlertHandlers\TrackerNotificationHandler.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\EventArgs\ProgressEventArgs.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\ResumeInfo.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\SessionSettings.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\TorrentConfig.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\TorrentState.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\Wrapper.cpp" />
+    <ClCompile Include="src\LibtorrentWrapper\WrapperInternal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,26 +1,16 @@
-/****************************************************************************
-** This file is a part of Syncopate Limited GameNet Application or it parts.
-**
-** Copyright (c) 2011 - 2015, Syncopate Limited and/or affiliates.
-** All rights reserved.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-****************************************************************************/
-
-#include <LibtorrentWrapper/Wrapper>
-#include <LibtorrentWrapper/WrapperInternal>
+#include <LibtorrentWrapper/Wrapper.h>
+#include <LibtorrentWrapper/WrapperInternal.h>
 #include <LibtorrentWrapper/SessionSettings.h>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent
   {
     libtorrent::session_settings resolveFromProfile(Wrapper::Profile profile)
     {
-      if (profile == GGS::Libtorrent::Wrapper::HIGH_PERFORMANCE_SEED) {
+      if (profile == P1::Libtorrent::Wrapper::HIGH_PERFORMANCE_SEED) {
         return highPerformanceSeed();
       }
-      else if (profile == GGS::Libtorrent::Wrapper::MIN_MEMORY_USAGE){
+      else if (profile == P1::Libtorrent::Wrapper::MIN_MEMORY_USAGE){
         return minMemoryUsage();
       }
 
@@ -31,12 +21,12 @@ namespace GGS {
       : QObject(parent)
     {
       this->_internalWrapper = new WrapperInternal(this);
-      connect(this->_internalWrapper, SIGNAL(progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs)), this, SIGNAL(progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs)));
+      connect(this->_internalWrapper, SIGNAL(progressChanged(P1::Libtorrent::EventArgs::ProgressEventArgs)), this, SIGNAL(progressChanged(P1::Libtorrent::EventArgs::ProgressEventArgs)));
       connect(this->_internalWrapper, SIGNAL(trackerFailed(QString, int, int)), this, SIGNAL(trackerFailed(QString, int, int)));
       connect(this->_internalWrapper, SIGNAL(fileError(QString, QString, int)), this, SIGNAL(fileError(QString, QString, int)));
       connect(this->_internalWrapper, SIGNAL(listenFailed(int, int)), this, SIGNAL(listenFailed(int, int)));
-      connect(this->_internalWrapper, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), 
-        this, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
+      connect(this->_internalWrapper, SIGNAL(torrentStatusChanged(QString, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), 
+        this, SIGNAL(torrentStatusChanged(QString, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
 
       connect(this->_internalWrapper, SIGNAL(torrentDownloadFinished(QString)), this, SIGNAL(torrentDownloadFinished(QString)));
       connect(this->_internalWrapper, SIGNAL(torrentResumed(QString)), this, SIGNAL(torrentResumed(QString)));

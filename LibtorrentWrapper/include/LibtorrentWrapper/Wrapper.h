@@ -1,23 +1,13 @@
-/****************************************************************************
-** This file is a part of Syncopate Limited GameNet Application or it parts.
-**
-** Copyright (c) 2011 - 2015, Syncopate Limited and/or affiliates.
-** All rights reserved.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-****************************************************************************/
-
 #pragma once 
 
-#include <LibtorrentWrapper/libtorrentwrapper_global>
-#include <LibtorrentWrapper/TorrentConfig>
-#include <LibtorrentWrapper/EventArgs/ProgressEventArgs>
+#include <LibtorrentWrapper/libtorrentwrapper_global.h>
+#include <LibtorrentWrapper/TorrentConfig.h>
+#include <LibtorrentWrapper/EventArgs/ProgressEventArgs.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent
   {
     class WrapperInternal;
@@ -26,7 +16,7 @@ namespace GGS {
       Q_OBJECT
     public:
       explicit Wrapper(QObject *parent = 0);
-      ~Wrapper();
+      virtual ~Wrapper();
 
       enum Profile {
         DEFAULT_PROFILE = 0,
@@ -229,7 +219,7 @@ namespace GGS {
       /// <summary>Progress.</summary>
       /// <remarks>Ilya.Tkachenko, 02.04.2012.</remarks>
       /// <param name="args">Progress event information.</param>
-      void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
+      void progressChanged(P1::Libtorrent::EventArgs::ProgressEventArgs args);
 
 
       /// <summary>Трекер вернул ошибку.</summary>
@@ -273,8 +263,8 @@ namespace GGS {
       /// <param name="oldState">State of the old.</param>
       /// <param name="newState">State of the new.</param>
       void torrentStatusChanged(QString id, 
-        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, 
-        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
+        P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, 
+        P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
 
 
       /// <summary>Torrent download finished.</summary>

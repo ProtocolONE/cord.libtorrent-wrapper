@@ -1,14 +1,4 @@
-/****************************************************************************
-** This file is a part of Syncopate Limited GameNet Application or it parts.
-**
-** Copyright (©) 2011 - 2012, Syncopate Limited and/or affiliates.
-** All rights reserved.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-****************************************************************************/
-
-#include <LibtorrentWrapper/WrapperInternal>
+#include <LibtorrentWrapper/WrapperInternal.h>
 #include <QtCore/QFileInfo>
 #include <QtCore/QSysInfo>
 #include <QtCore/QUrl>
@@ -16,13 +6,40 @@
 #include <libtorrent/hasher.hpp>
 #include <libtorrent/storage.hpp>
 
+#include <libtorrent/bencode.hpp>
+#include <libtorrent/alert.hpp>
+#include <libtorrent/alert_types.hpp>
+#include <libtorrent/extensions/ut_pex.hpp>
+#include <libtorrent/extensions/smart_ban.hpp>
+#include <libtorrent/peer_info.hpp>
+
+#include <libtorrent/config.hpp>
+#include <libtorrent/session.hpp>
+#include <libtorrent/error_code.hpp>
+#include <libtorrent/torrent_info.hpp>
+#include <libtorrent/torrent_handle.hpp>
+#include <libtorrent/entry.hpp>
+
+#include <libtorrent/lazy_entry.hpp>
+
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
+
+#include <QtCore/QMutexLocker>
+#include <QtCore/QVariant>
+#include <QtCore/QMetaObject>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QTime>
+#include <QtCore/QDebug>
+
 #define SIGNAL_CONNECT_CHECK(X) { bool result = X; Q_ASSERT_X(result, __FUNCTION__ , #X); }
 
 using namespace libtorrent;
 
-namespace GGS {
-  namespace Libtorrent
-  {
+namespace P1 {
+  namespace Libtorrent {
     WrapperInternal::WrapperInternal(QObject *parent)
       : QObject(parent)
       , _session(0)
@@ -190,11 +207,11 @@ namespace GGS {
       entry["save_path"] = config.downloadPath().toUtf8().data();
       entry["info-hash"] = torrentInfo.info_hash().to_string();
             
-      std::vector<std::pair<size_type, std::time_t>> fileSizes 
+      auto fileSizes
         = libtorrent::get_filesizes(torrentInfo.files(), config.downloadPath().toStdString());
 
       libtorrent::entry::list_type& fl = entry["file sizes"].list();
-      for (std::vector<std::pair<size_type, std::time_t> >::iterator i
+      for (std::vector<std::pair<libtorrent::size_type, std::time_t> >::iterator i
         = fileSizes.begin(), end(fileSizes.end()); i != end; ++i)
       {
         libtorrent::entry::list_type p;
@@ -241,6 +258,11 @@ namespace GGS {
       QString infohash = QString::fromStdString(state->handle().info_hash().to_string());
       this->_infohashToTorrentState.remove(infohash);
       delete state;
+    }
+
+    void WrapperInternal::setTorrentConfigDirectoryPath(const QString& path)
+    {
+      this->_torrentConfigDirectoryPath = path;
     }
 
     void WrapperInternal::alertTimerTick()
@@ -481,29 +503,29 @@ namespace GGS {
       this->_infohashToTorrentState[infohash] = state;
     }
 
-    GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus WrapperInternal::convertStatus(torrent_status::state_t status)
+    P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus WrapperInternal::convertStatus(torrent_status::state_t status)
     {
       switch(status)
       {
       case torrent_status::queued_for_checking:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::QueuedForChecking;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::QueuedForChecking;
       case torrent_status::checking_files:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::CheckingFiles;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::CheckingFiles;
       case torrent_status::downloading_metadata:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::DownloadingMetadata;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::DownloadingMetadata;
       case torrent_status::downloading:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Downloading;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::Downloading;
       case torrent_status::finished:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Finished;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::Finished;
       case torrent_status::seeding:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Seeding;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::Seeding;
       case torrent_status::allocating:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::Allocating;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::Allocating;
       case torrent_status::checking_resume_data:
-        return GGS::Libtorrent::EventArgs::ProgressEventArgs::CheckingResumeData;
+        return P1::Libtorrent::EventArgs::ProgressEventArgs::CheckingResumeData;
       }
 
-      return GGS::Libtorrent::EventArgs::ProgressEventArgs::Finished;
+      return P1::Libtorrent::EventArgs::ProgressEventArgs::Finished;
     }
 
     void WrapperInternal::saveFastResume(const torrent_handle &handle, boost::shared_ptr<entry> resumeData)
@@ -633,7 +655,7 @@ namespace GGS {
       }
     }
 
-    void WrapperInternal::calcDirectSpeed(GGS::Libtorrent::EventArgs::ProgressEventArgs& args, const libtorrent::torrent_handle &handle)
+    void WrapperInternal::calcDirectSpeed(P1::Libtorrent::EventArgs::ProgressEventArgs& args, const libtorrent::torrent_handle &handle)
     {
       std::vector<libtorrent::peer_info> peerInfo;
 
@@ -682,7 +704,7 @@ namespace GGS {
       torrent_status &status, 
       torrent_status::state_t torrentState)
     {
-      GGS::Libtorrent::EventArgs::ProgressEventArgs args;
+      P1::Libtorrent::EventArgs::ProgressEventArgs args;
       args.setId(id);
       args.setProgress(status.progress);
       args.setStatus(this->convertStatus(torrentState));
@@ -1238,5 +1260,11 @@ namespace GGS {
       if (hasUdpTrackers)
         handle.replace_trackers(announceEntries);
     }
+
+    void WrapperInternal::setListeningPort(unsigned short port)
+    {
+      this->_startupListeningPort = port;
+    }
+
   }
 }

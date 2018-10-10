@@ -20,16 +20,16 @@ SimpleDownloadTest::~SimpleDownloadTest()
 
 bool SimpleDownloadTest::start()
 {
-  using namespace GGS::Libtorrent;
+  using namespace P1::Libtorrent;
   Wrapper wrapper;
 
-  qDebug() << "wrapper connect progress " << connect(&wrapper, SIGNAL(progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs)), this, SLOT(torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs)));
+  qDebug() << "wrapper connect progress " << connect(&wrapper, SIGNAL(progressChanged(P1::Libtorrent::EventArgs::ProgressEventArgs)), this, SLOT(torrentProgress(P1::Libtorrent::EventArgs::ProgressEventArgs)));
   qDebug() << "wrapper connect file error " << connect(&wrapper, SIGNAL(fileError(QString, QString, int)), this, SLOT(torrentFileError(QString, QString, int)));
   qDebug() << "wrapper connect status changed " << connect(
     &wrapper, 
-    SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), 
+    SIGNAL(torrentStatusChanged(QString, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), 
     this, 
-    SLOT(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
+    SLOT(torrentStatusChanged(QString, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
   qDebug() << "wrapper connect torrentDownloadFinished " << connect(&wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
   qDebug() << "wrapper connect listeningPortChanged " << connect(&wrapper, SIGNAL(listeningPortChanged(unsigned short)), this, SLOT(listeningPortChanged(unsigned short)));
   qDebug() << "wrapper connect trackerFailed " << connect(&wrapper, SIGNAL(trackerFailed(QString, int, int)), this, SLOT(trackerFailed(QString, int, int)));
@@ -85,7 +85,7 @@ bool SimpleDownloadTest::start()
   return this->_result;
 }
 
-void SimpleDownloadTest::torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs args)
+void SimpleDownloadTest::torrentProgress(P1::Libtorrent::EventArgs::ProgressEventArgs args)
 {
   if (args.id() != this->_torrentId)
   {
@@ -108,7 +108,7 @@ void SimpleDownloadTest::torrentFileError(QString id, QString path, int errorCod
   this->setFail(err);
 }
 
-void SimpleDownloadTest::torrentStatusChanged( QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState )
+void SimpleDownloadTest::torrentStatusChanged( QString id, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState )
 {
   if (id != this->_torrentId)
   {

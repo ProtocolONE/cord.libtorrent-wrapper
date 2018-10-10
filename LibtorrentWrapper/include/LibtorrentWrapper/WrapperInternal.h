@@ -1,63 +1,29 @@
-/****************************************************************************
-** This file is a part of Syncopate Limited GameNet Application or it parts.
-**
-** Copyright (c) 2011 - 2015, Syncopate Limited and/or affiliates.
-** All rights reserved.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-****************************************************************************/
-
 #pragma once
 
-#include <LibtorrentWrapper/TorrentConfig>
-#include <LibtorrentWrapper/TorrentState>
-#include <LibtorrentWrapper/ResumeInfo>
-#include <LibtorrentWrapper/EventArgs/ProgressEventArgs>
-#include <LibtorrentWrapper/AlertHandlers/ErrorNotificationHandler>
-#include <LibtorrentWrapper/AlertHandlers/StatusNotificationHandler>
-#include <LibtorrentWrapper/AlertHandlers/TrackerNotificationHandler>
-#include <LibtorrentWrapper/AlertHandlers/StorageNotificationHandler>
-
-#include <libtorrent/config.hpp>
-#include <libtorrent/session.hpp>
-#include <libtorrent/error_code.hpp>
-#include <libtorrent/torrent_info.hpp>
-#include <libtorrent/torrent_handle.hpp>
-#include <libtorrent/entry.hpp>
-#include <libtorrent/lazy_entry.hpp>
-#include <libtorrent/bencode.hpp>
-#include <libtorrent/alert.hpp>
-#include <libtorrent/alert_types.hpp>
-#include <libtorrent/extensions/ut_pex.hpp>
-#include <libtorrent/extensions/smart_ban.hpp>
-#include <libtorrent/peer_info.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <LibtorrentWrapper/TorrentConfig.h>
+#include <LibtorrentWrapper/TorrentState.h>
+#include <LibtorrentWrapper/ResumeInfo.h>
+#include <LibtorrentWrapper/EventArgs/ProgressEventArgs.h>
+#include <LibtorrentWrapper/AlertHandlers/ErrorNotificationHandler.h>
+#include <LibtorrentWrapper/AlertHandlers/StatusNotificationHandler.h>
+#include <LibtorrentWrapper/AlertHandlers/TrackerNotificationHandler.h>
+#include <LibtorrentWrapper/AlertHandlers/StorageNotificationHandler.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QMap>
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
-#include <QtCore/QMutexLocker>
-#include <QtCore/QVariant>
-#include <QtCore/QMetaObject>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QTime>
-#include <QtCore/QDebug>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent {
 
     class WrapperInternal : public QObject
     {
       Q_OBJECT
     public:
-      WrapperInternal(QObject *parent = 0);
-      ~WrapperInternal();
+      explicit WrapperInternal(QObject *parent = 0);
+      virtual ~WrapperInternal();
 
       void initEngine(libtorrent::session_settings &settings);
 
@@ -75,8 +41,8 @@ namespace GGS {
       void stop(const QString& id);
       void remove(const QString& id);
       
-      void setTorrentConfigDirectoryPath(const QString& path) { this->_torrentConfigDirectoryPath = path; }
-      void setListeningPort(unsigned short port) { this->_startupListeningPort = port; }
+      void setTorrentConfigDirectoryPath(const QString& path);
+      void setListeningPort(unsigned short port);
       void changeListeningPort(unsigned short port);
       unsigned short listeningPort() const;
 
@@ -128,11 +94,11 @@ namespace GGS {
 
     signals:
       void listeningPortChanged(unsigned short port);
-      void progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
+      void progressChanged(P1::Libtorrent::EventArgs::ProgressEventArgs args);
 
       void torrentStatusChanged(QString id, 
-        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, 
-        GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
+        P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, 
+        P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
 
       void torrentDownloadFinished(QString id);
       void torrentResumed(QString id);
@@ -156,11 +122,11 @@ namespace GGS {
 
       void createDirectoryIfNotExists(const QString &resumeFilePath );
       void loadAndStartTorrent(const QString& id, const TorrentConfig &config, bool backgroudSeeding = false);
-      GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus convertStatus(const libtorrent::torrent_status::state_t status);
+      P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus convertStatus(const libtorrent::torrent_status::state_t status);
       inline TorrentState* getStateByTorrentHandle(const libtorrent::torrent_handle &handle);
       inline TorrentState* getStateById(const QString& id);
 
-      void calcDirectSpeed(GGS::Libtorrent::EventArgs::ProgressEventArgs& args, const libtorrent::torrent_handle &handle);
+      void calcDirectSpeed(P1::Libtorrent::EventArgs::ProgressEventArgs& args, const libtorrent::torrent_handle &handle);
       void emitTorrentProgress(const QString& id, const libtorrent::torrent_handle &handle);
       void emitTorrentProgress(
         const QString& id, 

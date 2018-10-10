@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "SimpleDownloadTest.h"
 #include "StartStopDownloadTest.h"
@@ -28,7 +28,7 @@ TEST(LibtorrentWrapper, DISABLED_startStopDownloadTest)
 
 TEST(LibtorrentWrapper, GetInfoHashTest)
 {
-  GGS::Libtorrent::Wrapper wrapper;
+  P1::Libtorrent::Wrapper wrapper;
   QString torrentPath = QCoreApplication::applicationDirPath();
   torrentPath.append("/fixtures/sampleclient.torrent");
   QString infoHash;
@@ -38,7 +38,7 @@ TEST(LibtorrentWrapper, GetInfoHashTest)
 
 TEST(LibtorrentWrapper, GetFileListTest)
 {
-  GGS::Libtorrent::Wrapper wrapper;
+  P1::Libtorrent::Wrapper wrapper;
   QString torrentPath = QCoreApplication::applicationDirPath();
   torrentPath.append("/fixtures/sampleclient.torrent");
   QList<QString> fileList;

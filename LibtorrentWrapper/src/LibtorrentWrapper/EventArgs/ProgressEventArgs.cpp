@@ -1,21 +1,9 @@
-/****************************************************************************
-** This file is a part of Syncopate Limited GameNet Application or it parts.
-**
-** Copyright (©) 2011 - 2012, Syncopate Limited and/or affiliates.
-** All rights reserved.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-****************************************************************************/
+#include <LibtorrentWrapper/EventArgs/ProgressEventArgs.h>
 
-#include <LibtorrentWrapper/EventArgs/ProgressEventArgs>
+namespace P1 {
+  namespace Libtorrent {
+    namespace EventArgs {
 
-namespace GGS 
-{
-  namespace Libtorrent
-  {
-    namespace EventArgs 
-    {
       ProgressEventArgs::ProgressEventArgs(QObject *parrent)
         : QObject(parrent)
       {
@@ -61,7 +49,7 @@ namespace GGS
         this->_status = status;
       }
 
-      GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus ProgressEventArgs::status() const
+      P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus ProgressEventArgs::status() const
       {
         return this->_status;
       }

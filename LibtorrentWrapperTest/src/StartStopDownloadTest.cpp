@@ -1,7 +1,7 @@
 #include "StartStopDownloadTest.h"
 #include "FileUtils.h"
 
-using namespace GGS::Libtorrent;
+using namespace P1::Libtorrent;
 
 StartStopDownloadTest::StartStopDownloadTest(QObject *parent)
   : QObject(parent)
@@ -15,7 +15,7 @@ StartStopDownloadTest::~StartStopDownloadTest()
 {
 }
 
-void StartStopDownloadTest::torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs args)
+void StartStopDownloadTest::torrentProgress(P1::Libtorrent::EventArgs::ProgressEventArgs args)
 {
   if (args.id() != this->_torrentId)
   {
@@ -38,7 +38,7 @@ void StartStopDownloadTest::torrentFileError(QString id, QString path, int error
   this->setFail(err);
 }
 
-void StartStopDownloadTest::torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState)
+void StartStopDownloadTest::torrentStatusChanged(QString id, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState)
 {
   if (id != this->_torrentId)
   {
@@ -86,9 +86,9 @@ bool StartStopDownloadTest::start()
 {
   this->_wrapper = new Wrapper();
 
-  qDebug() << "wrapper connect progress " << connect(this->_wrapper, SIGNAL(progressChanged(GGS::Libtorrent::EventArgs::ProgressEventArgs)), this, SLOT(torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs)));
+  qDebug() << "wrapper connect progress " << connect(this->_wrapper, SIGNAL(progressChanged(P1::Libtorrent::EventArgs::ProgressEventArgs)), this, SLOT(torrentProgress(P1::Libtorrent::EventArgs::ProgressEventArgs)));
   qDebug() << "wrapper connect file error " << connect(this->_wrapper, SIGNAL(fileError(QString, QString, int)), this, SLOT(torrentFileError(QString, QString, int)));
-  qDebug() << "wrapper connect status changed " << connect(this->_wrapper, SIGNAL(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
+  qDebug() << "wrapper connect status changed " << connect(this->_wrapper, SIGNAL(torrentStatusChanged(QString, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)), this, SLOT(torrentStatusChanged(QString, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus)));
   qDebug() << "wrapper connect torrentDownloadFinished " << connect(this->_wrapper, SIGNAL(torrentDownloadFinished(QString)), this, SLOT(torrentDownloadFinished(QString)));
   qDebug() << "wrapper connect torrentResumed " << connect(this->_wrapper, SIGNAL(torrentResumed(QString)), this, SLOT(torrentResumed(QString)));
 

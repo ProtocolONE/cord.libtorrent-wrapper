@@ -2,7 +2,7 @@
 
 #include <QtCore/QSysInfo>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent {
 
     using namespace libtorrent;

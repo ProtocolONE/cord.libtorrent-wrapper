@@ -1,9 +1,8 @@
-#ifndef _GGS_LIBTORRENT_WRAPPER_TEST_SIMPLE_DOWNLOAD_TEST_H_
-#define _GGS_LIBTORRENT_WRAPPER_TEST_SIMPLE_DOWNLOAD_TEST_H_
+#pragma once
 
-#include <LibtorrentWrapper/Wrapper>
-#include <LibtorrentWrapper/TorrentConfig>
-#include <LibtorrentWrapper/EventArgs/ProgressEventArgs>
+#include <LibtorrentWrapper/Wrapper.h>
+#include <LibtorrentWrapper/TorrentConfig.h>
+#include <LibtorrentWrapper/EventArgs/ProgressEventArgs.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QDebug>
@@ -29,9 +28,9 @@ public:
   int listenPortChangedEventCount;
   int trackerFailedEventCount;
 public slots:
-  void torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
+  void torrentProgress(P1::Libtorrent::EventArgs::ProgressEventArgs args);
   void torrentFileError(QString id, QString path, int errorCode);
-  void torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
+  void torrentStatusChanged(QString id, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
   void torrentDownloadFinished(QString id);
   void listeningPortChanged(unsigned short port);
 
@@ -50,5 +49,3 @@ private:
 
   void setFail(QString reason);
 };
-
-#endif // _GGS_LIBTORRENT_WRAPPER_TEST_SIMPLE_DOWNLOAD_TEST_H_

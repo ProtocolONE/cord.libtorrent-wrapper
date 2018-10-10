@@ -1,7 +1,7 @@
 #pragma once
 #include <libtorrent/session.hpp>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent {
     libtorrent::session_settings minMemoryUsage();
     libtorrent::session_settings highPerformanceSeed();

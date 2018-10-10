@@ -1,9 +1,8 @@
-#ifndef _GGS_LIBTORRENT_WRAPPER_TEST_STARTSTOP_DOWNLOAD_TEST_H_
-#define _GGS_LIBTORRENT_WRAPPER_TEST_STARTSTOP_DOWNLOAD_TEST_H_
+#pragma once
 
-#include <LibtorrentWrapper/Wrapper>
-#include <LibtorrentWrapper/TorrentConfig>
-#include <LibtorrentWrapper/EventArgs/ProgressEventArgs>
+#include <LibtorrentWrapper/Wrapper.h>
+#include <LibtorrentWrapper/TorrentConfig.h>
+#include <LibtorrentWrapper/EventArgs/ProgressEventArgs.h>
 
 #include <QtCore/QObject>
 #include <QtCore/QDebug>
@@ -29,9 +28,9 @@ public:
   int torrentResumeEventCount;
 
 public slots:
-  void torrentProgress(GGS::Libtorrent::EventArgs::ProgressEventArgs args);
+  void torrentProgress(P1::Libtorrent::EventArgs::ProgressEventArgs args);
   void torrentFileError(QString id, QString path, int errorCode);
-  void torrentStatusChanged(QString id, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, GGS::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
+  void torrentStatusChanged(QString id, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus oldState, P1::Libtorrent::EventArgs::ProgressEventArgs::TorrentStatus newState);
   void torrentDownloadFinished(QString id);
   void torrentResumed(QString id);
   void timeoutTick();
@@ -51,12 +50,10 @@ private:
   
   QString _downloadPath;
   QString _torrentPath;
-  GGS::Libtorrent::Wrapper *_wrapper;
+  P1::Libtorrent::Wrapper *_wrapper;
 
   void setResult(bool result);
 
   void setFail(QString reason);
 
 };
-
-#endif // _GGS_LIBTORRENT_WRAPPER_TEST_STARTSTOP_DOWNLOAD_TEST_H_

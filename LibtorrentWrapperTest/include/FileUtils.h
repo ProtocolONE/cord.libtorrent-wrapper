@@ -1,5 +1,4 @@
-#ifndef _GGS_LIBTORRENTWRAPPERTEST_FILEUTRILS_H_
-#define _GGS_LIBTORRENTWRAPPERTEST_FILEUTRILS_H_
+#pragma once
 
 #include <QtCore/QString>
 #include <QtCore/QDir>
@@ -12,5 +11,3 @@ class FileUtils
 public:
   static bool removeDir(const QString &dirName);
 };
-
-#endif // _GGS_LIBTORRENTWRAPPERTEST_FILEUTRILS_H_

@@ -31,14 +31,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="deps\gmock-gtest-all.cc" />
+    <ClCompile Include="GeneratedFiles\Static Release\moc_SimpleDownloadTest.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\LibtorrentWrapperTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SimpleDownloadTest.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Static Debug\moc_SimpleDownloadTest.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_SimpleDownloadTest.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -46,11 +44,11 @@
     <ClCompile Include="GeneratedFiles\Release\moc_SimpleDownloadTest.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileUtils.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Static Release\moc_StartStopDownloadTest.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\StartStopDownloadTest.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Static Debug\moc_StartStopDownloadTest.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_StartStopDownloadTest.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -58,6 +56,32 @@
     <ClCompile Include="GeneratedFiles\Release\moc_StartStopDownloadTest.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="src\FileUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibtorrentWrapperTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SimpleDownloadTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StartStopDownloadTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="deps\gmock\gmock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\gtest\gtest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="include\SimpleDownloadTest.h">
@@ -66,10 +90,5 @@
     <CustomBuild Include="include\StartStopDownloadTest.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\FileUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

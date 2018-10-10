@@ -3,7 +3,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-namespace GGS {
+namespace P1 {
   namespace Libtorrent {
 
     class ResumeInfo : public QObject
